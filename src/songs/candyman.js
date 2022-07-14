@@ -1,4 +1,4 @@
-import lyricStrToArr from "../js/lyric-loader";
+import lyricLoader from "../js/lyric-loader";
 
 const lyricStr = `
 [00:00.00](Tarzan and Jane were swingin' on a vine)
@@ -57,10 +57,12 @@ const lyricStr = `
 [03:08.53]Squared herself away as she let out a yell)
 `;
 
-const lyricData = lyricStrToArr(lyricStr);
+const lyricData = lyricLoader.lyricStrToArr(lyricStr);
+const lyricStopData = lyricLoader.lyricStrToStopArr(lyricStr);
 
 export default {
   lyricData,
-  lyricOffset: 0.5,
+  lyricStopData,
+  lyricOffset: 0,
   videoId: "ipa0GhPZYwA",
 };

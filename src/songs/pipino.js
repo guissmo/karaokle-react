@@ -1,8 +1,8 @@
-import lyricStrToArr from "../js/lyric-loader";
+import lyricLoader from "../js/lyric-loader";
 
 const lyricStr = `
 [00:04.73]Oy sambayang pipino
-[00:08.67]Ready na ba kayo
+[00:08.67]Ready na[[-3.4]] ba kayo
 [00:11.16]A one a two a three a four
 [00:13.15]Gusto kong hawakan ang pipino pipino pipino
 [00:20.67]Gusto kong kainin ang pipino pipino pipino
@@ -31,10 +31,12 @@ const lyricStr = `
 [01:45.21]No Pipino (o no ang sinabi ko hindi mo a)
 `;
 
-const lyricData = lyricStrToArr(lyricStr);
+const lyricData = lyricLoader.lyricStrToArr(lyricStr);
+const lyricStopData = lyricLoader.lyricStrToStopArr(lyricStr);
 
 export default {
   lyricData,
+  lyricStopData,
   lyricOffset: -4,
   videoId: "pZxBNJM_er8",
 };

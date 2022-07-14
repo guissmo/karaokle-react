@@ -2,7 +2,7 @@ import React from "react";
 import YouTube from "react-youtube";
 import { useState, useRef } from "react";
 import useInterval from "use-interval";
-import songInfo from "./songs/candyman";
+import songInfo from "./songs/pipino";
 
 const opts = {
   height: "390",
@@ -18,10 +18,24 @@ const YouTubePlayer = () => {
   const [isRunning, setIsRunning] = useState(false);
   const [lyric, setLyric] = useState("");
   const playerRef = useRef();
+  const stops = songInfo.lyricStopData;
+  console.log(stops);
+
+  let currentRound = 1;
+  console.log(currentRound);
+
+  let currentStop = stops[currentRound - 1].time;
 
   useInterval(
     async () => {
-      const elapsed = await playerRef.current.internalPlayer.getCurrentTime();
+      let elapsed = await playerRef.current.internalPlayer.getCurrentTime();
+      console.log(elapsed);
+      if (currentStop < elapsed) {
+        elapsed = currentStop;
+        playerRef.current.internalPlayer.seekTo(currentStop);
+        playerRef.current.internalPlayer.pauseVideo();
+      }
+
       let newLyric = "";
       for (let data of songInfo.lyricData) {
         if (data.time + songInfo.lyricOffset < elapsed) newLyric = data.lyr;
