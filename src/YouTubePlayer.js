@@ -2,7 +2,6 @@ import React from "react";
 import YouTube from "react-youtube";
 import { useState, useRef } from "react";
 import useInterval from "use-interval";
-import songInfo from "./songs/pipino";
 
 const opts = {
   height: "390",
@@ -14,22 +13,19 @@ const opts = {
   },
 };
 
-const YouTubePlayer = () => {
+const YouTubePlayer = ({ songInfo }) => {
   const [isRunning, setIsRunning] = useState(false);
   const [lyric, setLyric] = useState("");
   const playerRef = useRef();
-  const stops = songInfo.lyricStopData;
-  console.log(stops);
+
+  const stops = songInfo.lyricData.gapped;
 
   let currentRound = 1;
-  console.log(currentRound);
-
   let currentStop = stops[currentRound - 1].time;
 
   useInterval(
     async () => {
       let elapsed = await playerRef.current.internalPlayer.getCurrentTime();
-      console.log(elapsed);
       if (currentStop < elapsed) {
         elapsed = currentStop;
         playerRef.current.internalPlayer.seekTo(currentStop);
@@ -37,12 +33,13 @@ const YouTubePlayer = () => {
       }
 
       let newLyric = "";
-      for (let data of songInfo.lyricData) {
-        if (data.time + songInfo.lyricOffset < elapsed) newLyric = data.lyr;
+      for (let lyricData of songInfo.lyricData.full) {
+        if (lyricData.time + +songInfo.metadata.lyricOffset < elapsed)
+          newLyric = lyricData.lyr;
       }
       setLyric(newLyric);
     },
-    isRunning ? 10 : null
+    isRunning ? 100 : null
   );
 
   function onPlay() {
@@ -57,7 +54,7 @@ const YouTubePlayer = () => {
     <div>
       <YouTube
         ref={playerRef}
-        videoId={songInfo.videoId}
+        videoId={songInfo.metadata.videoId}
         opts={opts}
         onPlay={onPlay}
         onPause={onPause}

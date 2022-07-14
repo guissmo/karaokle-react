@@ -1,3 +1,5 @@
+import songData from "../lyrics/pipino.lrc";
+
 function getInfoFromLine(line) {
   const match = line.match(
     /\[(?<min>[0-9]+):(?<sec>[0-9]+)\.(?<csec>[0-9]+)\](?<lyr>.+)/
@@ -26,21 +28,34 @@ function getStopsFromLine(line) {
   };
 }
 
-function lyricStrToArr(lyricStr) {
-  return lyricStr
-    .split(/\r?\n/)
-    .map(getInfoFromLine)
-    .filter((x) => x);
+function extractInfo(text) {
+  const lines = text.split("\n");
+  let passedDashes = false;
+  let metadata = {};
+  let lyricLines = [];
+  for (let l of lines) {
+    if (l.trim() === "---") {
+      passedDashes = true;
+      continue;
+    }
+    if (!passedDashes) {
+      let [key, val] = l.split(":");
+      metadata[key.trim()] = val.trim();
+    } else {
+      lyricLines.push(l.trim());
+    }
+  }
+
+  return {
+    metadata,
+    lyricData: {
+      full: lyricLines.map(getInfoFromLine).filter((x) => x),
+      gapped: lyricLines.filter((x) => x.includes("[[")).map(getStopsFromLine),
+    },
+  };
 }
 
-function lyricStrToStopArr(lyricStr) {
-  return lyricStr
-    .split(/\r?\n/)
-    .filter((x) => x.includes("[["))
-    .map(getStopsFromLine);
+export async function loadLyricData() {
+  const text = await (await fetch(songData)).text();
+  return extractInfo(text);
 }
-
-export default {
-  lyricStrToArr,
-  lyricStrToStopArr,
-};
