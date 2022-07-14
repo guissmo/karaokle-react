@@ -6,7 +6,6 @@ function getInfoFromLine(line) {
     return null;
   }
   const { min, sec, csec, lyr } = match.groups;
-  console.log(+min, +sec, +csec);
   return {
     time: +min * 60 + +sec + +csec / 100,
     lyr,
