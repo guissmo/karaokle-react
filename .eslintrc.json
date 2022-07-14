@@ -8,6 +8,9 @@
     "prettier" // prettier must come last
   ],
   "plugins": ["react", "import", "jsx-a11y", "react-hooks"],
+  "rules": {
+    "react/prop-types": 0
+  },
   "parserOptions": {
     "ecmaVersion": 2022,
     "sourceType": "module",

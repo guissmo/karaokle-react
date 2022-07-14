@@ -2,6 +2,7 @@ import React from "react";
 import YouTube from "react-youtube";
 import { useState, useRef } from "react";
 import useInterval from "use-interval";
+import songInfo from "./songs/candyman";
 
 const opts = {
   height: "390",
@@ -14,14 +15,18 @@ const opts = {
 };
 
 const YouTubePlayer = () => {
-  const [elapsed, setElapsed] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [lyric, setLyric] = useState("");
   const playerRef = useRef();
 
   useInterval(
     async () => {
       const elapsed = await playerRef.current.internalPlayer.getCurrentTime();
-      setElapsed(elapsed);
+      let newLyric = "";
+      for (let data of songInfo.lyricData) {
+        if (data.time + songInfo.lyricOffset < elapsed) newLyric = data.lyr;
+      }
+      setLyric(newLyric);
     },
     isRunning ? 10 : null
   );
@@ -38,12 +43,12 @@ const YouTubePlayer = () => {
     <div>
       <YouTube
         ref={playerRef}
-        videoId="2g811Eo7K8U"
+        videoId={songInfo.videoId}
         opts={opts}
         onPlay={onPlay}
         onPause={onPause}
       />
-      {elapsed}
+      {lyric}
     </div>
   );
 };
