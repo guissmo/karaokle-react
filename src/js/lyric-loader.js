@@ -1,10 +1,8 @@
-import songData from "../lyrics/pipino.lrc";
-
 function getFullLyricDataFromLine(line, offset) {
   const { min, sec, csec, lyr } = getInfoFromLineViaRegex(line, true);
   return {
     time: getTimestamp(min, sec, csec, offset),
-    lyr: lyr,
+    lyr: lyr.replaceAll("###", ""),
   };
 }
 
@@ -104,16 +102,24 @@ function getInfoFromLineViaRegex(line, clean = false) {
 
   return {
     ...timeDic,
-    lyr: lyr + theRest.replaceAll("###", ""),
+    lyr: lyr + theRest,
   };
 }
 
 /////////////
 
-export async function loadLyricData() {
+export async function loadLyricData(songData) {
   const text = await (await fetch(songData)).text();
   return getInfoFromFile(text);
 }
 
-// export let __testables = {};
-// if (process.env["NODE_DEV"] == "TEST") __testables = { hi: "hi" };
+export let __testables = {};
+if (process.env["NODE_ENV"] === "test")
+  __testables = {
+    getFullLyricDataFromLine,
+    getStopDataFromLine,
+    getInfoFromFile,
+    getTimestamp,
+    getTimestampViaRegex,
+    getInfoFromLineViaRegex,
+  };

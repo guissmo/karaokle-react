@@ -2,6 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { useState } from "react";
 import { loadLyricData } from "./js/lyric-loader";
+import songData from "./lyrics/pipino.lrc";
 import YouTubePlayer from "./YouTubePlayer";
 import useInterval from "use-interval";
 import { StrictMode } from "react/cjs/react.production.min";
@@ -14,7 +15,7 @@ const App = () => {
     async function () {
       if (songInfo === null && !isLoadingSongInfo) {
         setIsLoadingSongInfo(true);
-        setSongInfo(await loadLyricData()); // TODO: Be able to change the file from outside via Node?
+        setSongInfo(await loadLyricData(songData)); // TODO: Be able to change the file from outside via Node?
         setIsLoadingSongInfo(false);
       }
     },
