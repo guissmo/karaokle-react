@@ -18,28 +18,36 @@ const YouTubePlayer = ({ songInfo }) => {
   const [lyric, setLyric] = useState("");
   const playerRef = useRef();
 
-  const stops = songInfo.lyricData.gapped;
+  let {
+    lyricData: { gapped },
+    metadata: { videoId },
+  } = songInfo;
+
+  const stops = gapped;
 
   let currentRound = 1;
   let currentStop = stops[currentRound - 1].time;
 
   useInterval(
     async () => {
-      let elapsed = await playerRef.current.internalPlayer.getCurrentTime();
-      if (currentStop < elapsed) {
-        elapsed = currentStop;
-        playerRef.current.internalPlayer.seekTo(currentStop);
-        playerRef.current.internalPlayer.pauseVideo();
-      }
-
-      let newLyric = "";
-      for (let lyricData of songInfo.lyricData.full) {
-        if (lyricData.time + +songInfo.metadata.lyricOffset < elapsed)
-          newLyric = lyricData.lyr;
-      }
-      setLyric(newLyric);
+      let elapsed = await getCurrentTime();
+      if (currentStop < elapsed) forceTimestamp(currentStop);
+      setLyric(currentLyric(songInfo, elapsed));
     },
-    isRunning ? 100 : null
+    isRunning ? 25 : null
+  );
+
+  return (
+    <div>
+      <YouTube
+        ref={playerRef}
+        videoId={videoId}
+        opts={opts}
+        onPlay={onPlay}
+        onPause={onPause}
+      />
+      {lyric}
+    </div>
   );
 
   function onPlay() {
@@ -50,18 +58,35 @@ const YouTubePlayer = ({ songInfo }) => {
     setIsRunning(false);
   }
 
-  return (
-    <div>
-      <YouTube
-        ref={playerRef}
-        videoId={songInfo.metadata.videoId}
-        opts={opts}
-        onPlay={onPlay}
-        onPause={onPause}
-      />
-      {lyric}
-    </div>
-  );
+  async function getCurrentTime() {
+    return await playerRef.current.internalPlayer.getCurrentTime();
+  }
+
+  function seekTo(timestamp) {
+    return playerRef.current.internalPlayer.seekTo(timestamp);
+  }
+
+  function pauseVideo() {
+    return playerRef.current.internalPlayer.pauseVideo();
+  }
+
+  function forceTimestamp(timestamp) {
+    seekTo(timestamp);
+    pauseVideo();
+  }
+
+  function currentLyric(songInfo, timestamp) {
+    let newLyric = "";
+    let {
+      lyricData: { full: fullLyricData },
+      metadata: { lyricOffset },
+    } = songInfo;
+    for (let lyricData of fullLyricData) {
+      const { time, lyr } = lyricData;
+      if (time + lyricOffset < timestamp) newLyric = lyr;
+    }
+    return newLyric;
+  }
 };
 
 export default YouTubePlayer;

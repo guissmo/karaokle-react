@@ -41,6 +41,7 @@ function extractInfo(text) {
     if (!passedDashes) {
       let [key, val] = l.split(":");
       metadata[key.trim()] = val.trim();
+      if (key === "lyricOffset") metadata[key.trim()] = Number(val);
     } else {
       lyricLines.push(l.trim());
     }
