@@ -1,6 +1,6 @@
 import songData from "../lyrics/pipino.lrc";
 
-function getInfoFromLine(line) {
+function getInfoFromLine(line, offset) {
   const match = line.match(
     /\[(?<min>[0-9]+):(?<sec>[0-9]+)\.(?<csec>[0-9]+)\](?<lyr>.+)/
   );
@@ -9,12 +9,12 @@ function getInfoFromLine(line) {
   }
   const { min, sec, csec, lyr } = match.groups;
   return {
-    time: +min * 60 + +sec + +csec / 100,
+    time: +min * 60 + +sec + +csec / 100 + offset,
     lyr: lyr.replace(/\[\[.+/g, ""),
   };
 }
 
-function getStopsFromLine(line) {
+function getStopsFromLine(line, offset) {
   const match = line.match(
     /\[(?<min>[0-9]+):(?<sec>[0-9]+)\.(?<csec>[0-9]+)\](?<lyr>.+)\[\[(?<stopOffset>[-.0-9]+)\]\]/
   );
@@ -23,7 +23,7 @@ function getStopsFromLine(line) {
   }
   const { min, sec, csec, lyr, stopOffset } = match.groups;
   return {
-    time: +min * 60 + +sec + +csec / 100 + +stopOffset,
+    time: +min * 60 + +sec + +csec / 100 + +stopOffset + offset,
     lyr: lyr.replace(/###/g, ""),
   };
 }
@@ -50,8 +50,12 @@ function extractInfo(text) {
   return {
     metadata,
     lyricData: {
-      full: lyricLines.map(getInfoFromLine).filter((x) => x),
-      gapped: lyricLines.filter((x) => x.includes("[[")).map(getStopsFromLine),
+      full: lyricLines
+        .map((x) => getInfoFromLine(x, metadata.lyricOffset))
+        .filter((x) => x),
+      gapped: lyricLines
+        .filter((x) => x.includes("[["))
+        .map((x) => getStopsFromLine(x, metadata.lyricOffset)),
     },
   };
 }
