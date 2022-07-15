@@ -104,7 +104,7 @@ function getInfoFromLineViaRegex(line, clean = false) {
 
   return {
     ...timeDic,
-    lyr: lyr + theRest,
+    lyr: lyr + theRest.replaceAll("###", ""),
   };
 }
 

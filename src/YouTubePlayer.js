@@ -42,7 +42,7 @@ const YouTubePlayer = ({ songInfo }) => {
       if (roundInfo.stopTime < elapsed) forceTimestamp(roundInfo.stopTime);
       setLyric(currentLyric(songInfo, elapsed));
     },
-    isRunning ? 25 : null
+    isRunning ? 10 : null
   );
 
   return (
