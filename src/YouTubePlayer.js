@@ -61,6 +61,9 @@ const YouTubePlayer = ({ songInfo }) => {
       </button>
       <button onClick={() => recapCurrentStop(-2)}>recapCurrentStop</button>
       {lyric}
+      <br />
+      <b>Answer:</b>
+      {roundInfo.answer}
     </div>
   );
 
