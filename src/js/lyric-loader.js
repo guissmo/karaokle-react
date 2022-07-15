@@ -1,34 +1,26 @@
 import songData from "../lyrics/pipino.lrc";
 
-function getInfoFromLine(line, offset) {
-  const match = line.match(
-    /\[(?<min>[0-9]+):(?<sec>[0-9]+)\.(?<csec>[0-9]+)\](?<lyr>.+)/
-  );
-  if (!match) {
-    return null;
-  }
-  const { min, sec, csec, lyr } = match.groups;
+function getFullLyricDataFromLine(line, offset) {
+  const { min, sec, csec, lyr } = getInfoFromLineViaRegex(line);
   return {
-    time: +min * 60 + +sec + +csec / 100 + offset,
-    lyr: lyr.replace(/\[\[.+/g, ""),
+    time: getTimestamp(min, sec, csec, offset),
+    lyr: lyr,
   };
 }
 
-function getStopsFromLine(line, offset) {
-  const match = line.match(
-    /\[(?<min>[0-9]+):(?<sec>[0-9]+)\.(?<csec>[0-9]+)\](?<lyr>.+)\[\[(?<stopOffset>[-.0-9]+)\]\]/
+function getStopDataFromLine(line, offset) {
+  const { min, sec, csec, lyr, stopOffset } = getInfoFromLineViaRegex(
+    line,
+    false
   );
-  if (!match) {
-    return null;
-  }
-  const { min, sec, csec, lyr, stopOffset } = match.groups;
   return {
-    time: +min * 60 + +sec + +csec / 100 + +stopOffset + offset,
-    lyr: lyr.replace(/###/g, ""),
+    time: getTimestamp(min, sec, csec, offset, stopOffset),
+    stopTime: getTimestamp(min, sec, csec, offset, stopOffset),
+    lyr: lyr, //.replace(/\[\[.+/g, ""),
   };
 }
 
-function extractInfo(text) {
+function getInfoFromFile(text) {
   const lines = text.split("\n");
   let passedDashes = false;
   let metadata = {};
@@ -50,17 +42,52 @@ function extractInfo(text) {
   return {
     metadata,
     lyricData: {
-      full: lyricLines
-        .map((x) => getInfoFromLine(x, metadata.lyricOffset))
-        .filter((x) => x),
+      full: lyricLines.map((x) =>
+        getFullLyricDataFromLine(x, metadata.lyricOffset)
+      ),
       gapped: lyricLines
         .filter((x) => x.includes("[["))
-        .map((x) => getStopsFromLine(x, metadata.lyricOffset)),
+        .map((x) => getStopDataFromLine(x, metadata.lyricOffset)),
     },
   };
 }
 
+function getTimestamp(min, sec, csec, ...offsets) {
+  const totalOffset = offsets.map((x) => Number(x)).reduce((x, y) => x + y);
+  return +min * 60 + +sec + +csec / 100 + totalOffset;
+}
+
+function getInfoFromLineViaRegex(line, full = true) {
+  {
+    const match = line.match(
+      /\[(?<min>[0-9]+):(?<sec>[0-9]+)\.(?<csec>[0-9]+)\](?<lyr>.+)\[\[(?<stopOffset>[-.0-9]+)\]\](?<theRest>.+)/
+    );
+    if (match !== null) {
+      const { min, sec, csec, lyr, theRest } = match.groups;
+      if (full) {
+        return {
+          min,
+          sec,
+          csec,
+          lyr: lyr + theRest,
+        };
+      }
+      return match.groups;
+    }
+  }
+  {
+    const match = line.match(
+      /\[(?<min>[0-9]+):(?<sec>[0-9]+)\.(?<csec>[0-9]+)\](?<lyr>.+)/
+    );
+    if (match !== null) {
+      return match.groups;
+    }
+  }
+}
+
+//
+
 export async function loadLyricData() {
   const text = await (await fetch(songData)).text();
-  return extractInfo(text);
+  return getInfoFromFile(text);
 }
