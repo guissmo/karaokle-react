@@ -17,10 +17,14 @@ const YouTubePlayer = ({ songInfo }) => {
   const [isRunning, setIsRunning] = useState(false);
   const [lyric, setLyric] = useState("");
   const [currentRound, setCurrentRound] = useState(1);
-  const [currentStop, setCurrentStop] = useState(null);
+  const [roundInfo, setRoundInfo] = useState({
+    time: null,
+    stopTime: null,
+    lyr: null,
+  });
   const playerRef = useRef();
 
-  let {
+  const {
     lyricData: { gapped },
     metadata: { videoId },
   } = songInfo;
@@ -29,13 +33,13 @@ const YouTubePlayer = ({ songInfo }) => {
   const rounds = stops.length;
 
   useEffect(() => {
-    setCurrentStop(stops[currentRound - 1].time);
-  }, [stops, currentRound]);
+    setRoundInfo(gapped[currentRound - 1]);
+  }, [gapped, currentRound]);
 
   useInterval(
     async () => {
       let elapsed = await getCurrentTime();
-      if (currentStop < elapsed) forceTimestamp(currentStop);
+      if (roundInfo.stopTime < elapsed) forceTimestamp(roundInfo.stopTime);
       setLyric(currentLyric(songInfo, elapsed));
     },
     isRunning ? 25 : null
@@ -97,6 +101,7 @@ const YouTubePlayer = ({ songInfo }) => {
     for (let lyricData of fullLyricData) {
       const { time, lyr } = lyricData;
       if (time < timestamp) newLyric = lyr;
+      if (roundInfo.time <= timestamp) newLyric = roundInfo.lyr;
     }
     return newLyric;
   }
@@ -112,7 +117,7 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function seekRelativeToCurrentStop(offset) {
-    seekTo(currentStop + offset);
+    seekTo(roundInfo.stopTime + offset);
   }
 
   function recapCurrentStop(offset) {

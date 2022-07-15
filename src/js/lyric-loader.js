@@ -14,9 +14,9 @@ function getStopDataFromLine(line, offset) {
     false
   );
   return {
-    time: getTimestamp(min, sec, csec, offset, stopOffset),
+    time: getTimestamp(min, sec, csec, offset),
     stopTime: getTimestamp(min, sec, csec, offset, stopOffset),
-    lyr: lyr, //.replace(/\[\[.+/g, ""),
+    lyr: lyr.replace(/\[\[.+/g, ""),
   };
 }
 
