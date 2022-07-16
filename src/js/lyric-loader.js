@@ -1,4 +1,4 @@
-function getFullLyricDataFromLine(line, offset) {
+function getFullLyricDataFromLine(line, offset = 0) {
   const { min, sec, csec, lyr } = getInfoFromLineViaRegex(line, true);
   return {
     time: getTimestamp(min, sec, csec, offset),
@@ -6,7 +6,7 @@ function getFullLyricDataFromLine(line, offset) {
   };
 }
 
-function getStopDataFromLine(line, offset) {
+function getStopDataFromLine(line, offset = 0) {
   const { min, sec, csec, lyr, stopOffset } = getInfoFromLineViaRegex(line);
   return {
     time: getTimestamp(min, sec, csec, offset),
@@ -15,7 +15,15 @@ function getStopDataFromLine(line, offset) {
   };
 }
 
-function getInfoFromFile(text) {
+function getMetadataFromLine(l) {
+  let [key, val] = l.split(":").map((x) => x.trim());
+  const ret = {};
+  if (key === "lyricOffset") val = Number(val);
+  ret[key] = val;
+  return ret;
+}
+
+function getMetadataAndRawLinesFromFile(text) {
   const lines = text.split("\n");
   let passedDashes = false;
   let metadata = {};
@@ -26,18 +34,25 @@ function getInfoFromFile(text) {
       continue;
     }
     if (!passedDashes) {
-      let [key, val] = l.split(":");
-      metadata[key.trim()] = val.trim();
-      if (key === "lyricOffset") metadata[key.trim()] = Number(val);
+      metadata = Object.assign(metadata, getMetadataFromLine(l));
     } else {
       lyricLines.push(l.trim());
     }
   }
+  if (!metadata.videoId) throw "no videoId found";
+  if (!metadata.lyricOffset)
+    metadata = Object.assign(metadata, {
+      lyricOffset: 0,
+    });
+  return { metadata, lyricLines };
+}
+
+function getInfoFromFile(text) {
+  const { metadata, lyricLines } = getMetadataAndRawLinesFromFile(text);
 
   const noTimestamps = lyricLines
     .map((x) => String(getTimestampViaRegex(x)[1]))
     .reduce((x, y) => `${x.trim()} ${y.trim()}`);
-  console.log(noTimestamps);
 
   const fullLyricData = lyricLines.map((x) =>
     getFullLyricDataFromLine(x, metadata.lyricOffset)
@@ -74,7 +89,14 @@ function getTimestampViaRegex(line) {
   const match = line.match(
     /^\[(?<min>[0-9]+):(?<sec>[0-9]+)\.(?<csec>[0-9]+)\]/
   );
-  return [match.groups, line.replace(match[0], "")];
+  return [
+    {
+      min: Number(match.groups.min),
+      sec: Number(match.groups.sec),
+      csec: Number(match.groups.csec),
+    },
+    line.replace(match[0], ""),
+  ];
 }
 
 function getInfoFromLineViaRegex(line, clean = false) {
@@ -118,6 +140,7 @@ if (process.env["NODE_ENV"] === "test")
   __testables = {
     getFullLyricDataFromLine,
     getStopDataFromLine,
+    getMetadataAndRawLinesFromFile,
     getInfoFromFile,
     getTimestamp,
     getTimestampViaRegex,
