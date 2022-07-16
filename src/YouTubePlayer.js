@@ -24,6 +24,7 @@ const YouTubePlayer = ({ songInfo }) => {
     lyr: null,
   });
   const playerRef = useRef();
+  const inputRef = useRef();
 
   const {
     lyricData: { gapped },
@@ -55,6 +56,7 @@ const YouTubePlayer = ({ songInfo }) => {
         onPlay={onPlay}
         onPause={onPause}
       />
+      <button onClick={playVideo}>playVideo</button>
       <button onClick={previousRound}>previousRound</button>
       <button onClick={nextRound}>nextRound</button>
       <button onClick={() => seekRelativeToCurrentStop(-2)}>
@@ -62,6 +64,9 @@ const YouTubePlayer = ({ songInfo }) => {
       </button>
       <button onClick={() => recapCurrentStop(-2)}>recapCurrentStop</button>
       {lyric} ({wordCount(lyric)})
+      <br />
+      <input ref={inputRef}></input>
+      <button onClick={validateAnswer}>Validate</button>
       <br />
       <b>Answer:</b>
       {roundInfo.answer} (
@@ -128,6 +133,14 @@ const YouTubePlayer = ({ songInfo }) => {
   function recapCurrentStop(offset) {
     seekRelativeToCurrentStop(offset);
     playVideo();
+  }
+
+  function validateAnswer() {
+    if (roundInfo.answer === inputRef.current.value) {
+      console.log("yes");
+    } else {
+      console.log("no");
+    }
   }
 };
 

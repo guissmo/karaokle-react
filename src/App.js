@@ -1,11 +1,10 @@
 import React from "react";
 import { createRoot } from "react-dom/client";
-import { useState } from "react";
+import { useState, StrictMode } from "react";
 import { loadLyricData } from "./js/lyric-loader";
-import songData from "./lyrics/pipino.lrc";
+import songData from "./lyrics/i-want-it-that-way.lrc";
 import YouTubePlayer from "./YouTubePlayer";
 import useInterval from "use-interval";
-import { StrictMode } from "react/cjs/react.production.min";
 
 const App = () => {
   const [songInfo, setSongInfo] = useState(null);

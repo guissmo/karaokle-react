@@ -13,7 +13,9 @@ const TL_PARAMS = {
 };
 
 const EN_PARAMS = {
-  wordSpacers: " ",
+  preprocess: (x) => x,
+  wordSpacers: /[ ]/,
+  wordReplacers: (x) => x,
 };
 
 const LANG_PARAMS = {
