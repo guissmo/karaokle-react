@@ -2,6 +2,7 @@ import React from "react";
 import YouTube from "react-youtube";
 import { useState, useRef, useEffect } from "react";
 import useInterval from "use-interval";
+import { wordCount } from "./js/word-counter";
 
 const opts = {
   height: "390",
@@ -60,10 +61,11 @@ const YouTubePlayer = ({ songInfo }) => {
         seekRelativeToCurrentStop
       </button>
       <button onClick={() => recapCurrentStop(-2)}>recapCurrentStop</button>
-      {lyric}
+      {lyric} ({wordCount(lyric)})
       <br />
       <b>Answer:</b>
-      {roundInfo.answer}
+      {roundInfo.answer} (
+      {roundInfo.answer ? wordCount(roundInfo.answer) : null})
     </div>
   );
 
