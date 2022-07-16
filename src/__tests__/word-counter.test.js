@@ -22,6 +22,7 @@ test("wordArrFromString - FR", () => {
     "J'ai vu un arc-en-ciel",
     "Puis après je f'rai des galas",
     "La. La? La! La, la (la)",
+    "C'est t'a m'a s'arroser j'ai j'suis l'amour",
   ];
   expect(wordArrFromString(arr[0], "FR")).toStrictEqual([
     "Je",
@@ -54,6 +55,22 @@ test("wordArrFromString - FR", () => {
     "La",
     "la",
     "la",
+  ]);
+  expect(wordArrFromString(arr[4], "FR")).toStrictEqual([
+    "C'",
+    "est",
+    "t'",
+    "a",
+    "m'",
+    "a",
+    "s'",
+    "arroser",
+    "j'",
+    "ai",
+    "j'",
+    "suis",
+    "l'",
+    "amour",
   ]);
 });
 

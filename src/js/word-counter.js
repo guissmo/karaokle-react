@@ -1,6 +1,6 @@
 const FR_PARAMS = {
   preprocess: (x) => {
-    return x.replaceAll(/(?<l>s'|m'|t'|c'|j')/gi, `$<l> `);
+    return x.replaceAll(/(?<l>s'|m'|t'|c'|j'|l')/gi, `$<l> `);
   },
   wordSpacers: /[ ]/,
   wordReplacers: (word) => word.replaceAll(/[.,?!()]/g, ""),
