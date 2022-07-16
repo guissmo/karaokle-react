@@ -1,0 +1,285 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`wordArrFromString - TL 1`] = `
+Array [
+  Object {
+    "correct": true,
+    "userAnswer": "DED",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "NA",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "DED",
+  },
+  Object {
+    "correct": false,
+    "userAnswer": "tlaaga",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "ako",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "sa",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "MGA",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "pakembotkembot",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "mo",
+  },
+]
+`;
+
+exports[`wordArrFromString - TL 2`] = `
+Array [
+  Object {
+    "correct": true,
+    "userAnswer": "Basta't",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "wag",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "syang",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "hawakan",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "pag",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "galit",
+  },
+]
+`;
+
+exports[`wordArrFromString - TL 3`] = `
+Array [
+  Object {
+    "correct": true,
+    "userAnswer": "nasa",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "isip",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "ko",
+  },
+  Object {
+    "correct": false,
+    "userAnswer": "siya",
+  },
+  Object {
+    "correct": false,
+    "userAnswer": "araw-araw",
+  },
+  Object {
+    "correct": false,
+    "userAnswer": "aking",
+  },
+  Object {
+    "correct": false,
+    "userAnswer": "sinta",
+  },
+  Object {
+    "correct": false,
+    "userAnswer": null,
+  },
+]
+`;
+
+exports[`wordComparison - FR 1`] = `
+Array [
+  Object {
+    "correct": true,
+    "userAnswer": "Je",
+  },
+  Object {
+    "correct": false,
+    "userAnswer": "me",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "presente",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "je",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "m'",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "appelle",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "Henri",
+  },
+]
+`;
+
+exports[`wordComparison - FR 2`] = `
+Array [
+  Object {
+    "correct": true,
+    "userAnswer": "j'",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "ai",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "vu",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "un",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "arc-en-ciel",
+  },
+]
+`;
+
+exports[`wordComparison - FR 3`] = `
+Array [
+  Object {
+    "correct": true,
+    "userAnswer": "PUIS",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "APRES",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "JE",
+  },
+  Object {
+    "correct": false,
+    "userAnswer": "FERAI",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "DES",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "GALAS",
+  },
+]
+`;
+
+exports[`wordComparison - FR 4`] = `
+Array [
+  Object {
+    "correct": true,
+    "userAnswer": "LA",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "LA",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "LA",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "LA",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "LA",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "LA",
+  },
+]
+`;
+
+exports[`wordComparison - FR 5`] = `
+Array [
+  Object {
+    "correct": true,
+    "userAnswer": "c'",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "Est",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "t'",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "A",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "m'",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "A",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "s'",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "Arroser",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "j'",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "Ai",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "j'",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "suis",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "l'",
+  },
+  Object {
+    "correct": true,
+    "userAnswer": "AMOUR",
+  },
+]
+`;

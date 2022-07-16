@@ -3,7 +3,7 @@
  */
 
 import { expect, test } from "@jest/globals";
-import { wordCount, wordArrFromString } from "../js/word-counter";
+import { wordCount, compareAnswers } from "../js/word-counter";
 
 test("wordCount - FR", () => {
   const arr = [
@@ -16,62 +16,27 @@ test("wordCount - FR", () => {
   expect(wordCount(arr[2], "FR")).toBe(6);
 });
 
-test("wordArrFromString - FR", () => {
+test("wordComparison - FR", () => {
   const arr = [
-    "Je m'présente, je m'appelle Henri",
+    "Je m'présente,   je m'appelle  Henri    ",
     "J'ai vu un arc-en-ciel",
     "Puis après je f'rai des galas",
     "La. La? La! La, la (la)",
     "C'est t'a m'a s'arroser j'ai j'suis l'amour",
   ];
-  expect(wordArrFromString(arr[0], "FR")).toStrictEqual([
-    "Je",
-    "m'",
-    "présente",
-    "je",
-    "m'",
-    "appelle",
-    "Henri",
-  ]);
-  expect(wordArrFromString(arr[1], "FR")).toStrictEqual([
-    "J'",
-    "ai",
-    "vu",
-    "un",
-    "arc-en-ciel",
-  ]);
-  expect(wordArrFromString(arr[2], "FR")).toStrictEqual([
-    "Puis",
-    "après",
-    "je",
-    "f'rai",
-    "des",
-    "galas",
-  ]);
-  expect(wordArrFromString(arr[3], "FR")).toStrictEqual([
-    "La",
-    "La",
-    "La",
-    "La",
-    "la",
-    "la",
-  ]);
-  expect(wordArrFromString(arr[4], "FR")).toStrictEqual([
-    "C'",
-    "est",
-    "t'",
-    "a",
-    "m'",
-    "a",
-    "s'",
-    "arroser",
-    "j'",
-    "ai",
-    "j'",
-    "suis",
-    "l'",
-    "amour",
-  ]);
+  expect(
+    compareAnswers(arr[0], "Je me presente je m'appelle Henri", "FR")
+  ).toMatchSnapshot();
+  expect(
+    compareAnswers(arr[1], "j'ai vu un arc-en-ciel", "FR")
+  ).toMatchSnapshot();
+  expect(
+    compareAnswers(arr[2], "PUIS APRES JE FERAI DES GALAS", "FR")
+  ).toMatchSnapshot(); // TO FIX FERAI
+  expect(compareAnswers(arr[3], "LA LA LA LA LA LA", "FR")).toMatchSnapshot();
+  expect(
+    compareAnswers(arr[4], "c'Est t'A m'A s'Arroser j'Ai j'suis l'AMOUR", "FR")
+  ).toMatchSnapshot();
 });
 
 test("wordCount - TL", () => {
@@ -87,24 +52,19 @@ test("wordArrFromString - TL", () => {
   const arr = [
     "Ded na ded talaga ako sa mga pakembot-kembot mo",
     "Basta't 'wag s'yang hawakan 'pag galit",
+    "Nasa isip ko s'ya gabi-gabi araw-araw, aking sinta.",
   ];
-  expect(wordArrFromString(arr[0], "TL")).toStrictEqual([
-    "Ded",
-    "na",
-    "ded",
-    "talaga",
-    "ako",
-    "sa",
-    "mga",
-    "pakembot-kembot",
-    "mo",
-  ]);
-  expect(wordArrFromString(arr[1], "TL")).toStrictEqual([
-    "Basta't",
-    "'wag",
-    "s'yang",
-    "hawakan",
-    "'pag",
-    "galit",
-  ]);
+  expect(
+    compareAnswers(
+      arr[0],
+      "DED NA DED tlaaga ako sa MGA pakembotkembot mo",
+      "TL"
+    )
+  ).toMatchSnapshot();
+  expect(
+    compareAnswers(arr[1], "Basta't wag syang hawakan pag galit", "TL")
+  ).toMatchSnapshot();
+  expect(
+    compareAnswers(arr[2], "nasa isip ko siya araw-araw aking sinta", "TL")
+  ).toMatchSnapshot();
 });

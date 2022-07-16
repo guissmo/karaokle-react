@@ -2,7 +2,7 @@ import React from "react";
 import YouTube from "react-youtube";
 import { useState, useRef, useEffect } from "react";
 import useInterval from "use-interval";
-import { wordCount } from "./js/word-counter";
+import { wordCount, compareAnswers } from "./js/word-counter";
 
 const opts = {
   height: "390",
@@ -130,17 +130,13 @@ const YouTubePlayer = ({ songInfo }) => {
     seekTo(roundInfo.stopTime + offset);
   }
 
+  function validateAnswer() {
+    return compareAnswers(roundInfo.answer, inputRef.current.value, "FR");
+  }
+
   function recapCurrentStop(offset) {
     seekRelativeToCurrentStop(offset);
     playVideo();
-  }
-
-  function validateAnswer() {
-    if (roundInfo.answer === inputRef.current.value) {
-      console.log("yes");
-    } else {
-      console.log("no");
-    }
   }
 };
 
