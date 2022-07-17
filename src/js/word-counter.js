@@ -28,7 +28,14 @@ const TL_PARAMS = {
 const EN_PARAMS = {
   preprocess: (x) => x,
   wordSpacers: /[ ]+/,
-  wordReplacers: (x) => x,
+  wordReplacers: (word) => word.replaceAll(/[.,?!()]/g, ""),
+  correctionNormalizer: (word) =>
+    word
+      .trim()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replaceAll(/[^A-Za-z0-9\- ']/g, "")
+      .toUpperCase(),
 };
 
 const LANG_PARAMS = {
@@ -61,6 +68,12 @@ export function wordComparison(correctWord, userWord, lang) {
     userAnswer:
       userWord === undefined ? null : wordPresentationNormalizer(userWord),
   };
+}
+
+export function presentableString(str, lang) {
+  return wordArrFromString(str, lang)
+    .map((x) => wordPresentationNormalizer(x))
+    .join(" ");
 }
 
 export function wordArrFromString(str, lang) {

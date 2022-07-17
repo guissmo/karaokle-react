@@ -2,7 +2,11 @@ import React from "react";
 import YouTube from "react-youtube";
 import { useState, useRef, useEffect } from "react";
 import useInterval from "use-interval";
-import { wordCount, compareAnswers } from "./js/word-counter";
+import {
+  wordCount,
+  compareAnswers,
+  presentableString,
+} from "./js/word-counter";
 
 const opts = {
   height: "390",
@@ -23,6 +27,7 @@ const YouTubePlayer = ({ songInfo }) => {
     stopTime: null,
     lyr: null,
   });
+  const [currentAnswer, setCurrentAnswer] = useState("");
   const playerRef = useRef();
   const inputRef = useRef();
 
@@ -65,14 +70,19 @@ const YouTubePlayer = ({ songInfo }) => {
       <button onClick={() => recapCurrentStop(-2)}>recapCurrentStop</button>
       {lyric} ({wordCount(lyric)})
       <br />
-      <input ref={inputRef}></input>
+      <input ref={inputRef} onBlur={getAnswerFromInput}></input>
       <button onClick={validateAnswer}>Validate</button>
+      {currentAnswer}
       <br />
       <b>Answer:</b>
       {roundInfo.answer} (
       {roundInfo.answer ? wordCount(roundInfo.answer) : null})
     </div>
   );
+
+  function getAnswerFromInput() {
+    setCurrentAnswer(presentableString(inputRef.current.value, "FR"));
+  }
 
   function onPlay() {
     setIsRunning(true);
