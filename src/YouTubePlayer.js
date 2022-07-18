@@ -13,21 +13,23 @@ const opts = {
   width: "640",
   playerVars: {
     // https://developers.google.com/youtube/player_parameters
-    autoplay: 1,
-    controls: 1,
+    autoplay: 0,
+    controls: 0,
   },
 };
 
 const YouTubePlayer = ({ songInfo }) => {
-  const [isRunning, setIsRunning] = useState(false);
+  const [videoIsPlaying, setVideoIsPlaying] = useState(false);
   const [lyric, setLyric] = useState("");
-  const [currentRound, setCurrentRound] = useState(1);
+  const [currentRound, setCurrentRound] = useState(null);
   const [roundInfo, setRoundInfo] = useState({
     time: null,
     stopTime: null,
     lyr: null,
   });
   const [currentAnswer, setCurrentAnswer] = useState("");
+  const [gameState, setGameState] = useState("not-loaded"); //not-loaded, ready-to-start running, ended
+  const [score, setScore] = useState(0);
   const playerRef = useRef();
   const inputRef = useRef();
 
@@ -47,9 +49,10 @@ const YouTubePlayer = ({ songInfo }) => {
     async () => {
       let elapsed = await getCurrentTime();
       if (roundInfo.stopTime < elapsed) forceTimestamp(roundInfo.stopTime);
-      setLyric(currentLyric(songInfo, elapsed));
+      const { lyric } = getCurrentLyric(songInfo, elapsed);
+      setLyric(lyric);
     },
-    isRunning ? 10 : null
+    videoIsPlaying ? 10 : null
   );
 
   return (
@@ -60,23 +63,34 @@ const YouTubePlayer = ({ songInfo }) => {
         opts={opts}
         onPlay={onPlay}
         onPause={onPause}
+        onReady={onReady}
       />
-      <button onClick={playVideo}>playVideo</button>
-      <button onClick={previousRound}>previousRound</button>
-      <button onClick={nextRound}>nextRound</button>
-      <button onClick={() => seekRelativeToCurrentStop(-2)}>
-        seekRelativeToCurrentStop
-      </button>
-      <button onClick={() => recapCurrentStop(-2)}>recapCurrentStop</button>
-      {lyric} ({wordCount(lyric)})
-      <br />
-      <input ref={inputRef} onBlur={getAnswerFromInput}></input>
-      <button onClick={validateAnswer}>Validate</button>
-      {currentAnswer}
-      <br />
-      <b>Answer:</b>
-      {roundInfo.answer} (
-      {roundInfo.answer ? wordCount(roundInfo.answer) : null})
+      {gameState === "not-loaded" ? null : (
+        <div>
+          <button onClick={startGame}>startGame</button>
+          <button onClick={playVideo}>playVideo</button>
+          <button onClick={previousRound}>previousRound</button>
+          <button onClick={nextRound}>nextRound</button>
+          <button onClick={goToTimestampOfArrayEntry}>
+            goToTimestampOfArrayEntry
+          </button>
+          <button onClick={() => seekRelativeToCurrentStop(-2)}>
+            seekRelativeToCurrentStop
+          </button>
+          <button onClick={() => recapCurrentStop(-5)}>recapCurrentStop</button>
+          {lyric} ({wordCount(lyric)})
+          <br />
+          <input ref={inputRef} onBlur={getAnswerFromInput}></input>
+          <button onClick={validateAnswer}>Validate</button>
+          {currentAnswer}
+          <br />
+          <b>Score:</b> {score}
+          <br />
+          <b>Answer:</b>
+          {roundInfo ? roundInfo.answer : null}(
+          {roundInfo && roundInfo.answer ? wordCount(roundInfo.answer) : null})
+        </div>
+      )}
     </div>
   );
 
@@ -85,11 +99,31 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function onPlay() {
-    setIsRunning(true);
+    setVideoIsPlaying(true);
+    if (gameState === "ready-to-start") startGame();
   }
 
   function onPause() {
-    setIsRunning(false);
+    setVideoIsPlaying(false);
+  }
+
+  function onReady() {
+    setGameState("ready-to-start");
+  }
+
+  function startGame() {
+    setScore(0);
+    startRound(1);
+    setGameState("running");
+  }
+
+  function startRound(roundNumber) {
+    setCurrentRound(roundNumber);
+    setRoundInfo(gapped[currentRound - 1]);
+    const previousRoundStartTime =
+      roundNumber <= 1 ? 0 : gapped[roundNumber - 1 - 1].time;
+    seekTo(previousRoundStartTime);
+    playVideo();
   }
 
   async function getCurrentTime() {
@@ -113,27 +147,45 @@ const YouTubePlayer = ({ songInfo }) => {
     pauseVideo();
   }
 
-  function currentLyric(songInfo, timestamp) {
+  function getCurrentLyric(songInfo, timestamp) {
     let newLyric = "";
+    let index = -1;
     let {
       lyricData: { full: fullLyricData },
     } = songInfo;
-    for (let lyricData of fullLyricData) {
+    for (let [i, lyricData] of fullLyricData.entries()) {
       const { time, lyr } = lyricData;
-      if (time < timestamp) newLyric = lyr;
+      if (time < timestamp) {
+        index = i;
+        newLyric = lyr;
+      }
       if (roundInfo.time <= timestamp) newLyric = roundInfo.lyr;
     }
-    return newLyric;
+    return {
+      index,
+      lyric: newLyric,
+    };
+  }
+
+  function goToTimestampOfArrayEntry(num) {
+    num = prompt();
+    let {
+      lyricData: { full: fullLyricData },
+    } = songInfo;
+    if (num < 0) num = 0;
+    if (num >= fullLyricData.length) num = fullLyricData - 1;
+    seekTo(fullLyricData[num].time);
+    playVideo();
   }
 
   function previousRound() {
     const newRound = currentRound - 1;
-    if (0 < newRound) setCurrentRound(newRound);
+    if (0 < newRound) startRound(newRound);
   }
 
   function nextRound() {
     const newRound = currentRound + 1;
-    if (newRound <= rounds) setCurrentRound(newRound);
+    if (newRound <= rounds) startRound(newRound);
   }
 
   function seekRelativeToCurrentStop(offset) {
