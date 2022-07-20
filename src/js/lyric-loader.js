@@ -103,7 +103,7 @@ function getInfoFromLineViaRegex(line, clean = false) {
   const [timeDic, text] = getTimestampViaRegex(line);
 
   const match = text.match(
-    /(?<lyr>.+)\[\[(?<stopOffset>[-.0-9]+)\]\](?<theRest>.+)/
+    /(?<lyr>.+)\[\[(?<stopOffset>[-.0-9]+)\]\](?<theRest>.*)/
   );
 
   if (match === null) {

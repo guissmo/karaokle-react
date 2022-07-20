@@ -1,6 +1,6 @@
 import React from "react";
 import YouTube from "react-youtube";
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef } from "react";
 import useInterval from "use-interval";
 import {
   wordCount,
@@ -28,27 +28,22 @@ const YouTubePlayer = ({ songInfo }) => {
     lyr: null,
   });
   const [currentAnswer, setCurrentAnswer] = useState("");
-  const [gameState, setGameState] = useState("not-loaded"); //not-loaded, ready-to-start running, ended
+  const [gameState, setGameState] = useState("not-loaded"); //not-loaded, ready-to-start, running, ended
   const [score, setScore] = useState(0);
   const playerRef = useRef();
   const inputRef = useRef();
 
   const {
-    lyricData: { gapped },
+    lyricData: { gapped: stops },
     metadata: { videoId },
   } = songInfo;
-
-  const stops = gapped;
   const rounds = stops.length;
-
-  useEffect(() => {
-    setRoundInfo(gapped[currentRound - 1]);
-  }, [gapped, currentRound]);
 
   useInterval(
     async () => {
       let elapsed = await getCurrentTime();
-      if (roundInfo.stopTime < elapsed) forceTimestamp(roundInfo.stopTime);
+      if (gameState === "running")
+        if (roundInfo.stopTime < elapsed) forceTimestamp(roundInfo.stopTime);
       const { lyric } = getCurrentLyric(songInfo, elapsed);
       setLyric(lyric);
     },
@@ -68,7 +63,7 @@ const YouTubePlayer = ({ songInfo }) => {
       {gameState === "not-loaded" ? null : (
         <div>
           <button onClick={startGame}>startGame</button>
-          <button onClick={playVideo}>playVideo</button>
+          {/* <button onClick={playVideo}>playVideo</button> */}
           <button onClick={previousRound}>previousRound</button>
           <button onClick={nextRound}>nextRound</button>
           <button onClick={goToTimestampOfArrayEntry}>
@@ -113,17 +108,21 @@ const YouTubePlayer = ({ songInfo }) => {
 
   function startGame() {
     setScore(0);
-    startRound(1);
     setGameState("running");
+    startRound(1);
   }
 
   function startRound(roundNumber) {
     setCurrentRound(roundNumber);
-    setRoundInfo(gapped[currentRound - 1]);
-    const previousRoundStartTime =
-      roundNumber <= 1 ? 0 : gapped[roundNumber - 1 - 1].time;
-    seekTo(previousRoundStartTime);
+    setRoundInfo(stops[roundNumber - 1]);
+    goToLastLineOfRound(roundNumber - 1);
     playVideo();
+  }
+
+  function goToLastLineOfRound(roundNumber) {
+    const previousRoundStartTime =
+      roundNumber < 1 ? 0 : stops[roundNumber - 1].time;
+    seekTo(previousRoundStartTime);
   }
 
   async function getCurrentTime() {
@@ -135,10 +134,12 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function playVideo() {
+    setVideoIsPlaying(true);
     return playerRef.current.internalPlayer.playVideo();
   }
 
   function pauseVideo() {
+    setVideoIsPlaying(false);
     return playerRef.current.internalPlayer.pauseVideo();
   }
 
@@ -159,7 +160,8 @@ const YouTubePlayer = ({ songInfo }) => {
         index = i;
         newLyric = lyr;
       }
-      if (roundInfo.time <= timestamp) newLyric = roundInfo.lyr;
+      if (gameState === "running" && roundInfo.time <= timestamp)
+        newLyric = roundInfo.lyr;
     }
     return {
       index,
@@ -193,7 +195,23 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function validateAnswer() {
-    return compareAnswers(roundInfo.answer, inputRef.current.value, "FR");
+    const result = compareAnswers(
+      roundInfo.answer,
+      inputRef.current.value,
+      "FR"
+    );
+    console.log(result);
+    if (result.reduce((x, y) => x && y.correct, true)) {
+      setScore(score + 1);
+    }
+    if (currentRound < rounds) startRound(currentRound + 1);
+    else endGame();
+  }
+
+  function endGame() {
+    setGameState("ended");
+    goToLastLineOfRound(5);
+    playVideo();
   }
 
   function recapCurrentStop(offset) {
