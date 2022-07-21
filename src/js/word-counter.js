@@ -8,7 +8,7 @@ const FR_PARAMS = {
       .trim()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
-      .replaceAll(/[^A-Za-z0-9\- ']/g, "")
+      .replaceAll(/[^A-Za-z0-9 ]/g, "")
       .toUpperCase(),
 };
 
@@ -34,7 +34,7 @@ const EN_PARAMS = {
       .trim()
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
-      .replaceAll(/[^A-Za-z0-9\- ']/g, "")
+      .replaceAll(/[^A-Za-z0-9 ]/g, "")
       .toUpperCase(),
 };
 
@@ -93,9 +93,11 @@ export function wordComparison(
 }
 
 export function presentableString(str, lang) {
-  return wordArrFromString(str, lang)
-    .map((x) => wordPresentationNormalizer(x))
-    .join(" ");
+  return presentableArray(str, lang).join(" ");
+}
+
+export function presentableArray(str, lang) {
+  return wordArrFromString(str, lang).map((x) => wordPresentationNormalizer(x));
 }
 
 export function wordArrFromString(str, lang) {

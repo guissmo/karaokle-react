@@ -12,7 +12,7 @@ test("handleAlternateSpellings", () => {
   });
   expect(__testables.handleAlternateSpellings(arr[1], "FR")).toStrictEqual({
     YOU: ["ya"],
-    "F'RAI": ["ferai"],
+    FRAI: ["ferai"],
   });
   expect(__testables.handleAlternateSpellings(arr[2], "FR")).toStrictEqual({
     YUNG: ["yong", "iyung", "iyong"],

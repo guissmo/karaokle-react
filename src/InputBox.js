@@ -3,16 +3,16 @@
 import React, { forwardRef, useState } from "react";
 import "./css/input-box.css";
 
-function InputBox({ currentAnswer, onBlur, children }, ref) {
+function InputBox({ children, placeholder, onBlur, timeToWrite }, ref) {
   const hiddenStyle = { width: 0, height: 0, overflow: "hidden" };
   const [inputIsVisible, setInputIsVisible] = useState(false);
   return (
     <div>
-      <div style={inputIsVisible ? {} : hiddenStyle}>
+      <div style={inputIsVisible && timeToWrite ? {} : hiddenStyle}>
         <input
           ref={ref}
           className={`noplp-input-box input-lyric`}
-          placeholder={currentAnswer}
+          placeholder={placeholder}
           onFocus={() => setInputIsVisible(true)}
           onBlur={() => {
             setInputIsVisible(false);
@@ -22,9 +22,19 @@ function InputBox({ currentAnswer, onBlur, children }, ref) {
         />
       </div>
       <div
-        style={inputIsVisible ? { display: "none" } : {}}
+        style={
+          inputIsVisible && timeToWrite
+            ? { display: "none" }
+            : timeToWrite
+            ? {}
+            : { opacity: 0.3 }
+        }
         className={`noplp-input-box input-lyric`}
-        onClick={() => ref.current.focus()}
+        onClick={() => {
+          if (timeToWrite) {
+            ref.current.focus();
+          }
+        }}
       >
         {children}
       </div>

@@ -1,10 +1,10 @@
 import React from "react";
 import "./css/round-marker.css";
 
-function RoundMarker({ round, result, current, numberOfWords }) {
+function RoundMarker({ current, numberOfWords }) {
   return (
     <div className={`round-marker ${current ? " current" : null}`}>
-      {current ? `${numberOfWords} WORDS` : `1`}
+      {current ? `${numberOfWords} WORDS` : `\xa0`}
     </div>
     // <div className="">
     //   Round {round} is{" "}

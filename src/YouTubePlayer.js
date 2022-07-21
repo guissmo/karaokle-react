@@ -6,11 +6,13 @@ import {
   wordCount,
   compareAnswers,
   presentableString,
+  presentableArray,
 } from "./js/word-counter";
 import ResultsDisplay from "./ResultsDisplay";
 import RoundMarkers from "./RoundMarkers";
 import LyricBox from "./LyricBox";
 import InputBox from "./InputBox";
+import WordsDisplay from "./WordsDisplay";
 import "./css/youtube-embed.css";
 
 const opts = {
@@ -29,6 +31,7 @@ const opts = {
 const YouTubePlayer = ({ songInfo }) => {
   const [videoIsPlaying, setVideoIsPlaying] = useState(false);
   const [lyric, setLyric] = useState("");
+  const [timeToWrite, setTimeToWrite] = useState(false);
   const [currentRound, setCurrentRound] = useState(null);
   const [roundInfo, setRoundInfo] = useState({
     time: null,
@@ -53,8 +56,9 @@ const YouTubePlayer = ({ songInfo }) => {
       let elapsed = await getCurrentTime();
       if (gameState === "running") {
         if (roundInfo.stopTime < elapsed) {
-          forceTimestamp(roundInfo.stopTime);
           inputRef.current.focus();
+          setTimeToWrite(true);
+          forceTimestamp(roundInfo.stopTime);
         }
       }
       const { lyric } = getCurrentLyric(songInfo, elapsed);
@@ -92,8 +96,22 @@ const YouTubePlayer = ({ songInfo }) => {
             ref={inputRef}
             currentAnswer={currentAnswer}
             onBlur={getAnswerFromInput}
+            timeToWrite={!videoIsPlaying && timeToWrite}
+            placeholder={"Start typing your answer"}
           >
-            {currentAnswer ? currentAnswer : "\xa0"}
+            {currentAnswer ? (
+              <WordsDisplay
+                wordArray={presentableArray(currentAnswer, language)}
+                maxLength={wordsToFindOnRound(currentRound)}
+              />
+            ) : gameState === "running" ? (
+              <WordsDisplay
+                wordArray={[]}
+                maxLength={wordsToFindOnRound(currentRound)}
+              />
+            ) : (
+              "\xa0"
+            )}
           </InputBox>
           <button onClick={startGame}>startGame</button>
           {/* <button onClick={playVideo}>playVideo</button> */}
@@ -111,7 +129,7 @@ const YouTubePlayer = ({ songInfo }) => {
           <button onClick={validateAnswer}>Validate</button>
           {currentAnswer}
           <br />
-          <b>Score:</b> {score}
+          <b>Score:</b> {score} : {roundInfo ? roundInfo.stopTime : null}
           <br />
           {gameResults.map((x) => (
             <ResultsDisplay key={x.key} round={x.key} result={x.result} />
@@ -122,6 +140,7 @@ const YouTubePlayer = ({ songInfo }) => {
   );
 
   function wordsToFindOnRound(roundNumber) {
+    if (roundNumber <= 0 || roundNumber > rounds) return 0;
     return wordCount(stops[roundNumber - 1].answer);
   }
 
@@ -130,6 +149,7 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function onPlay() {
+    console.log("onPlay");
     setVideoIsPlaying(true);
     if (gameState === "ready-to-start") startGame();
   }
@@ -149,6 +169,7 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function startRound(roundNumber) {
+    setTimeToWrite(false);
     setCurrentRound(roundNumber);
     setRoundInfo(stops[roundNumber - 1]);
     goToLastLineOfRound(roundNumber - 1);
@@ -172,12 +193,11 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function playVideo() {
-    setVideoIsPlaying(true);
+    console.log("playVideo");
     return playerRef.current.internalPlayer.playVideo();
   }
 
   function pauseVideo() {
-    setVideoIsPlaying(false);
     return playerRef.current.internalPlayer.pauseVideo();
   }
 
@@ -228,11 +248,14 @@ const YouTubePlayer = ({ songInfo }) => {
     if (newRound <= rounds) startRound(newRound);
   }
 
-  function seekRelativeToCurrentStop(offset) {
+  async function seekRelativeToCurrentStop(offset) {
+    console.log("seekRelativeToCurrentStop");
+    setTimeToWrite(false);
     seekTo(roundInfo.stopTime + offset);
   }
 
   function validateAnswer() {
+    setTimeToWrite(false);
     const result = compareAnswers(
       roundInfo.answer,
       inputRef.current.value,

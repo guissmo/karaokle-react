@@ -10,7 +10,7 @@ test("wordComparison - EN", () => {
     wordComparison("fireman", "firemen", "EN", { FIREMAN: ["firemen"] }).correct
   ).toBe(true);
   expect(
-    wordComparison("f'rai", "ferai", "FR", { "F'RAI": ["ferai"] }).correct
+    wordComparison("f'rai", "ferai", "FR", { FRAI: ["ferai"] }).correct
   ).toBe(true);
 });
 
