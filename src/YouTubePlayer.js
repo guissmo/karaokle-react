@@ -7,6 +7,7 @@ import {
   compareAnswers,
   presentableString,
 } from "./js/word-counter";
+import ResultsDisplay from "./ResultsDisplay";
 
 const opts = {
   height: "390",
@@ -30,7 +31,7 @@ const YouTubePlayer = ({ songInfo }) => {
   const [currentAnswer, setCurrentAnswer] = useState("");
   const [gameState, setGameState] = useState("not-loaded"); //not-loaded, ready-to-start, running, ended
   const [score, setScore] = useState(0);
-  const gameResults = [];
+  const [gameResults, setGameResults] = useState([]);
   const playerRef = useRef();
   const inputRef = useRef();
 
@@ -86,6 +87,9 @@ const YouTubePlayer = ({ songInfo }) => {
           {roundInfo ? roundInfo.answer : null}( */}
           <b>Number of Words to Find:</b>{" "}
           {roundInfo && roundInfo.answer ? wordCount(roundInfo.answer) : null}
+          {gameResults.map((x) => (
+            <ResultsDisplay key={x.key} result={x.result} />
+          ))}
         </div>
       )}
     </div>
@@ -203,7 +207,12 @@ const YouTubePlayer = ({ songInfo }) => {
       language,
       alternateSpellings
     );
-    gameResults[currentRound] = result;
+    let tempArray = gameResults.slice();
+    tempArray[currentRound] = {
+      key: currentRound,
+      result,
+    };
+    setGameResults(tempArray);
     console.log(result);
     if (result.reduce((x, y) => x && y.correct, true)) {
       setScore(score + 1);
