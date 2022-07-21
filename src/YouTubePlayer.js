@@ -8,14 +8,19 @@ import {
   presentableString,
 } from "./js/word-counter";
 import ResultsDisplay from "./ResultsDisplay";
+import RoundMarker from "./RoundMarker";
+import "./css/youtube-embed.css";
 
 const opts = {
-  height: "390",
-  width: "640",
+  height: "240",
+  width: "320",
   playerVars: {
     // https://developers.google.com/youtube/player_parameters
     autoplay: 0,
     controls: 0,
+    modestbranding: 1,
+    cc_load_policy: 0,
+    disablekb: 1,
   },
 };
 
@@ -54,14 +59,17 @@ const YouTubePlayer = ({ songInfo }) => {
 
   return (
     <div>
-      <YouTube
-        ref={playerRef}
-        videoId={videoId}
-        opts={opts}
-        onPlay={onPlay}
-        onPause={onPause}
-        onReady={onReady}
-      />
+      <div style={{ maxWidth: 600 }}>
+        <YouTube
+          ref={playerRef}
+          videoId={videoId}
+          className="video-container"
+          opts={opts}
+          onPlay={onPlay}
+          onPause={onPause}
+          onReady={onReady}
+        />
+      </div>
       {gameState === "not-loaded" ? null : (
         <div>
           <button onClick={startGame}>startGame</button>
@@ -83,17 +91,26 @@ const YouTubePlayer = ({ songInfo }) => {
           <br />
           <b>Score:</b> {score}
           <br />
-          {/* <b>Answer:</b>
-          {roundInfo ? roundInfo.answer : null}( */}
-          <b>Number of Words to Find:</b>{" "}
-          {roundInfo && roundInfo.answer ? wordCount(roundInfo.answer) : null}
           {gameResults.map((x) => (
             <ResultsDisplay key={x.key} round={x.key} result={x.result} />
+          ))}
+          {Array.from(Array(rounds).keys()).map((x) => (
+            <RoundMarker
+              key={x + 1}
+              round={x + 1}
+              current={x + 1 === currentRound}
+              numberOfWords={stops ? wordsToFindOnRound(x + 1) : 0}
+              result={gameResults[x + 1]}
+            />
           ))}
         </div>
       )}
     </div>
   );
+
+  function wordsToFindOnRound(roundNumber) {
+    return wordCount(stops[roundNumber - 1].answer);
+  }
 
   function getAnswerFromInput() {
     setCurrentAnswer(presentableString(inputRef.current.value, language));
