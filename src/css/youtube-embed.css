@@ -4,6 +4,8 @@
   padding-top: 30px;
   height: 0;
   overflow: hidden;
+  border-radius: 10px;
+  opacity: 0.8;
 }
 
 .video-container iframe,

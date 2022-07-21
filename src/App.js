@@ -2,7 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { useState, StrictMode } from "react";
 import { loadLyricData } from "./js/lyric-loader";
-import songData from "./lyrics/uptown-funk.lrc";
+import songData from "./lyrics/sinaktan-mo-ang-puso-ko.lrc";
 import YouTubePlayer from "./YouTubePlayer";
 import useInterval from "use-interval";
 

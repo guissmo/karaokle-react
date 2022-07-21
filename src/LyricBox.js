@@ -1,11 +1,9 @@
 import React from "react";
-import "./css/round-marker.css";
+import "./css/lyric-box.css";
 
-function RoundMarker({ round, result, current, numberOfWords }) {
+function LyricBox({ lyric }) {
   return (
-    <div className={`round-marker ${current ? " current" : null}`}>
-      {current ? `${numberOfWords} WORDS` : `1`}
-    </div>
+    <div className={`noplp-box lyric`}>{lyric ? lyric : "\xa0"}</div>
     // <div className="">
     //   Round {round} is{" "}
     //   {current
@@ -18,4 +16,4 @@ function RoundMarker({ round, result, current, numberOfWords }) {
   );
 }
 
-export default RoundMarker;
+export default LyricBox;

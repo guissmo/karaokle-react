@@ -8,7 +8,9 @@ import {
   presentableString,
 } from "./js/word-counter";
 import ResultsDisplay from "./ResultsDisplay";
-import RoundMarker from "./RoundMarker";
+import RoundMarkers from "./RoundMarkers";
+import LyricBox from "./LyricBox";
+import InputBox from "./InputBox";
 import "./css/youtube-embed.css";
 
 const opts = {
@@ -49,8 +51,12 @@ const YouTubePlayer = ({ songInfo }) => {
   useInterval(
     async () => {
       let elapsed = await getCurrentTime();
-      if (gameState === "running")
-        if (roundInfo.stopTime < elapsed) forceTimestamp(roundInfo.stopTime);
+      if (gameState === "running") {
+        if (roundInfo.stopTime < elapsed) {
+          forceTimestamp(roundInfo.stopTime);
+          inputRef.current.focus();
+        }
+      }
       const { lyric } = getCurrentLyric(songInfo, elapsed);
       setLyric(lyric);
     },
@@ -58,7 +64,7 @@ const YouTubePlayer = ({ songInfo }) => {
   );
 
   return (
-    <div>
+    <div style={{ display: "block" }}>
       <div style={{ maxWidth: 600 }}>
         <YouTube
           ref={playerRef}
@@ -70,8 +76,25 @@ const YouTubePlayer = ({ songInfo }) => {
           onReady={onReady}
         />
       </div>
-      {gameState === "not-loaded" ? null : (
+      {gameState === "not-loaded" ? (
+        "Waiting for video to load."
+      ) : (
         <div>
+          <RoundMarkers
+            gameResults={gameResults}
+            rounds={rounds}
+            stops={stops}
+            currentRound={currentRound}
+            wordsToFindOnRound={wordsToFindOnRound}
+          />
+          <LyricBox lyric={lyric} />
+          <InputBox
+            ref={inputRef}
+            currentAnswer={currentAnswer}
+            onBlur={getAnswerFromInput}
+          >
+            {currentAnswer ? currentAnswer : "\xa0"}
+          </InputBox>
           <button onClick={startGame}>startGame</button>
           {/* <button onClick={playVideo}>playVideo</button> */}
           <button onClick={previousRound}>previousRound</button>
@@ -85,7 +108,6 @@ const YouTubePlayer = ({ songInfo }) => {
           <button onClick={() => recapCurrentStop(-2)}>recapCurrentStop</button>
           {lyric} ({wordCount(lyric)})
           <br />
-          <input ref={inputRef} onBlur={getAnswerFromInput}></input>
           <button onClick={validateAnswer}>Validate</button>
           {currentAnswer}
           <br />
@@ -93,15 +115,6 @@ const YouTubePlayer = ({ songInfo }) => {
           <br />
           {gameResults.map((x) => (
             <ResultsDisplay key={x.key} round={x.key} result={x.result} />
-          ))}
-          {Array.from(Array(rounds).keys()).map((x) => (
-            <RoundMarker
-              key={x + 1}
-              round={x + 1}
-              current={x + 1 === currentRound}
-              numberOfWords={stops ? wordsToFindOnRound(x + 1) : 0}
-              result={gameResults[x + 1]}
-            />
           ))}
         </div>
       )}
@@ -139,6 +152,8 @@ const YouTubePlayer = ({ songInfo }) => {
     setCurrentRound(roundNumber);
     setRoundInfo(stops[roundNumber - 1]);
     goToLastLineOfRound(roundNumber - 1);
+    setCurrentAnswer("");
+    inputRef.current.value = "";
     playVideo();
   }
 

@@ -1,0 +1,15 @@
+.round-marker {
+  flex: 1;
+  display: inline-block;
+  background-color: black;
+  color: white;
+  margin: 5;
+  border-radius: 20px;
+  text-align: center;
+  border: 2px darkgray solid;
+}
+
+.current {
+  background-color: red;
+  flex: 5;
+}
