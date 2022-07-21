@@ -88,7 +88,7 @@ const YouTubePlayer = ({ songInfo }) => {
           <b>Number of Words to Find:</b>{" "}
           {roundInfo && roundInfo.answer ? wordCount(roundInfo.answer) : null}
           {gameResults.map((x) => (
-            <ResultsDisplay key={x.key} result={x.result} />
+            <ResultsDisplay key={x.key} round={x.key} result={x.result} />
           ))}
         </div>
       )}
