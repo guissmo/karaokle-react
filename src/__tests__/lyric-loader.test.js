@@ -5,6 +5,20 @@
 import { expect, test } from "@jest/globals";
 import { __testables } from "../js/lyric-loader";
 
+test("handleAlternateSpellings", () => {
+  const arr = ["you|ya", "you|ya f'rai|ferai", "yung|yong|iyung|iyong"];
+  expect(__testables.handleAlternateSpellings(arr[0], "FR")).toStrictEqual({
+    YOU: ["ya"],
+  });
+  expect(__testables.handleAlternateSpellings(arr[1], "FR")).toStrictEqual({
+    YOU: ["ya"],
+    "F'RAI": ["ferai"],
+  });
+  expect(__testables.handleAlternateSpellings(arr[2], "FR")).toStrictEqual({
+    YUNG: ["yong", "iyung", "iyong"],
+  });
+});
+
 test("getInfoFromLineViaRegex1", () => {
   const array = [
     `[01:10.96]Basta't huwag mang-agaw ng pipino ng iba`,
@@ -94,6 +108,8 @@ test("getMetadataAndRawLinesFromFile", () => {
   const array = [
     `lyricOffset: -4
 videoId: pZxBNJM_er8
+language: TL
+alternateSpellings: you|ya
 ---
 [00:04.73]Oy sambayang pipino
 [00:08.67]Ready na ba kayo`,
@@ -103,7 +119,9 @@ videoId: pZxBNJM_er8
     lyricLines: ["[00:04.73]Oy sambayang pipino", "[00:08.67]Ready na ba kayo"],
     metadata: {
       lyricOffset: -4,
+      language: "TL",
       videoId: "pZxBNJM_er8",
+      alternateSpellings: { YOU: ["ya"] },
     },
   });
 });

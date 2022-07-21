@@ -114,7 +114,7 @@ Array [
     "userAnswer": "Je",
   },
   Object {
-    "correct": false,
+    "correct": true,
     "userAnswer": "me",
   },
   Object {
@@ -180,7 +180,7 @@ Array [
     "userAnswer": "JE",
   },
   Object {
-    "correct": false,
+    "correct": true,
     "userAnswer": "FERAI",
   },
   Object {

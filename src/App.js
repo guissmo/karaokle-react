@@ -2,7 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { useState, StrictMode } from "react";
 import { loadLyricData } from "./js/lyric-loader";
-import songData from "./lyrics/i-want-you-back.lrc";
+import songData from "./lyrics/linda-blair.lrc";
 import YouTubePlayer from "./YouTubePlayer";
 import useInterval from "use-interval";
 

@@ -1,3 +1,5 @@
+import { LANG_PARAMS } from "./word-counter";
+
 function getFullLyricDataFromLine(line, offset = 0) {
   const { min, sec, csec, lyr } = getInfoFromLineViaRegex(line, true);
   return {
@@ -15,10 +17,27 @@ function getStopDataFromLine(line, offset = 0) {
   };
 }
 
-function getMetadataFromLine(l) {
+function handleAlternateSpellings(val, lang) {
+  let ret = {};
+  const PARAMS = LANG_PARAMS[lang];
+  for (let v of val.split(" ")) {
+    const words = v.split("|");
+    const normalizedCorrectWord = PARAMS.correctionNormalizer(words[0], lang);
+    ret[normalizedCorrectWord] = [];
+    for (let w of words.slice(1)) {
+      ret[normalizedCorrectWord].push(w);
+    }
+  }
+  return ret;
+}
+
+function getMetadataFromLine(l, lang) {
   let [key, val] = l.split(":").map((x) => x.trim());
   const ret = {};
   if (key === "lyricOffset") val = Number(val);
+  if (key === "alternateSpellings") {
+    val = handleAlternateSpellings(val, lang);
+  }
   ret[key] = val;
   return ret;
 }
@@ -26,7 +45,10 @@ function getMetadataFromLine(l) {
 function getMetadataAndRawLinesFromFile(text) {
   const lines = text.split("\n");
   let passedDashes = false;
-  let metadata = {};
+  let metadata = {
+    lyricOffset: 0,
+    alternateSpellings: {},
+  }; // default values
   let lyricLines = [];
   for (let l of lines) {
     if (l.trim() === "---") {
@@ -34,7 +56,10 @@ function getMetadataAndRawLinesFromFile(text) {
       continue;
     }
     if (!passedDashes) {
-      metadata = Object.assign(metadata, getMetadataFromLine(l));
+      metadata = Object.assign(
+        metadata,
+        getMetadataFromLine(l, metadata.language)
+      );
     } else {
       lyricLines.push(l.trim());
     }
@@ -145,4 +170,5 @@ if (process.env["NODE_ENV"] === "test")
     getTimestamp,
     getTimestampViaRegex,
     getInfoFromLineViaRegex,
+    handleAlternateSpellings,
   };

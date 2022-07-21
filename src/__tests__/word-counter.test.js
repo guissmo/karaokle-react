@@ -3,7 +3,16 @@
  */
 
 import { expect, test } from "@jest/globals";
-import { wordCount, compareAnswers } from "../js/word-counter";
+import { wordCount, compareAnswers, wordComparison } from "../js/word-counter";
+
+test("wordComparison - EN", () => {
+  expect(
+    wordComparison("fireman", "firemen", "EN", { FIREMAN: ["firemen"] }).correct
+  ).toBe(true);
+  expect(
+    wordComparison("f'rai", "ferai", "FR", { "F'RAI": ["ferai"] }).correct
+  ).toBe(true);
+});
 
 test("wordCount - FR", () => {
   const arr = [
@@ -25,14 +34,18 @@ test("wordComparison - FR", () => {
     "C'est t'a m'a s'arroser j'ai j'suis l'amour",
   ];
   expect(
-    compareAnswers(arr[0], "Je me presente je m'appelle Henri", "FR")
+    compareAnswers(arr[0], "Je me presente je m'appelle Henri", "FR", {
+      "M'": ["me"],
+    })
   ).toMatchSnapshot();
   expect(
     compareAnswers(arr[1], "j'ai vu un arc-en-ciel", "FR")
   ).toMatchSnapshot();
   expect(
-    compareAnswers(arr[2], "PUIS APRES JE FERAI DES GALAS", "FR")
-  ).toMatchSnapshot(); // TO FIX FERAI
+    compareAnswers(arr[2], "PUIS APRES JE FERAI DES GALAS", "FR", {
+      "F'RAI": ["ferai"],
+    })
+  ).toMatchSnapshot();
   expect(compareAnswers(arr[3], "LA LA LA LA LA LA", "FR")).toMatchSnapshot();
   expect(
     compareAnswers(arr[4], "c'Est t'A m'A s'Arroser j'Ai j'suis l'AMOUR", "FR")

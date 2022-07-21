@@ -30,12 +30,13 @@ const YouTubePlayer = ({ songInfo }) => {
   const [currentAnswer, setCurrentAnswer] = useState("");
   const [gameState, setGameState] = useState("not-loaded"); //not-loaded, ready-to-start, running, ended
   const [score, setScore] = useState(0);
+  const gameResults = [];
   const playerRef = useRef();
   const inputRef = useRef();
 
   const {
     lyricData: { gapped: stops },
-    metadata: { videoId },
+    metadata: { videoId, language, alternateSpellings },
   } = songInfo;
   const rounds = stops.length;
 
@@ -72,7 +73,7 @@ const YouTubePlayer = ({ songInfo }) => {
           <button onClick={() => seekRelativeToCurrentStop(-2)}>
             seekRelativeToCurrentStop
           </button>
-          <button onClick={() => recapCurrentStop(-5)}>recapCurrentStop</button>
+          <button onClick={() => recapCurrentStop(-2)}>recapCurrentStop</button>
           {lyric} ({wordCount(lyric)})
           <br />
           <input ref={inputRef} onBlur={getAnswerFromInput}></input>
@@ -81,16 +82,17 @@ const YouTubePlayer = ({ songInfo }) => {
           <br />
           <b>Score:</b> {score}
           <br />
-          <b>Answer:</b>
-          {roundInfo ? roundInfo.answer : null}(
-          {roundInfo && roundInfo.answer ? wordCount(roundInfo.answer) : null})
+          {/* <b>Answer:</b>
+          {roundInfo ? roundInfo.answer : null}( */}
+          <b>Number of Words to Find:</b>{" "}
+          {roundInfo && roundInfo.answer ? wordCount(roundInfo.answer) : null}
         </div>
       )}
     </div>
   );
 
   function getAnswerFromInput() {
-    setCurrentAnswer(presentableString(inputRef.current.value, "FR"));
+    setCurrentAnswer(presentableString(inputRef.current.value, language));
   }
 
   function onPlay() {
@@ -149,7 +151,7 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function getCurrentLyric(songInfo, timestamp) {
-    let newLyric = "";
+    let newLyric = "...";
     let index = -1;
     let {
       lyricData: { full: fullLyricData },
@@ -198,8 +200,10 @@ const YouTubePlayer = ({ songInfo }) => {
     const result = compareAnswers(
       roundInfo.answer,
       inputRef.current.value,
-      "FR"
+      language,
+      alternateSpellings
     );
+    gameResults[currentRound] = result;
     console.log(result);
     if (result.reduce((x, y) => x && y.correct, true)) {
       setScore(score + 1);

@@ -38,7 +38,7 @@ const EN_PARAMS = {
       .toUpperCase(),
 };
 
-const LANG_PARAMS = {
+export const LANG_PARAMS = {
   FR: FR_PARAMS,
   EN: EN_PARAMS,
   TL: TL_PARAMS,
@@ -48,23 +48,45 @@ function wordPresentationNormalizer(word) {
   return word.replaceAll(/[^A-Za-zÀ-ÖØ-öø-ÿ0-9\- '']/g, "");
 }
 
-export function compareAnswers(correctString, userString, lang) {
+export function compareAnswers(
+  correctString,
+  userString,
+  lang,
+  alternateSpellings
+) {
   const correctArray = wordArrFromString(correctString, lang);
   const userArray = wordArrFromString(userString, lang);
   let resultArray = [];
   for (let [i, correctWord] of correctArray.entries()) {
-    resultArray.push(wordComparison(correctWord, userArray[i], lang));
+    resultArray.push(
+      wordComparison(correctWord, userArray[i], lang, alternateSpellings)
+    );
   }
   return resultArray;
 }
 
-export function wordComparison(correctWord, userWord, lang) {
+export function wordComparison(
+  correctWord,
+  userWord,
+  lang,
+  alternateSpellings = {}
+) {
   const PARAMS = LANG_PARAMS[lang];
+  const normalize = PARAMS.correctionNormalizer;
+  let correct = false;
+  if (userWord !== undefined) {
+    correct = normalize(correctWord) === normalize(userWord);
+    if (!correct && normalize(correctWord) in alternateSpellings) {
+      for (let altSpell of alternateSpellings[normalize(correctWord)]) {
+        if (normalize(altSpell) === normalize(userWord)) {
+          correct = true;
+          break;
+        }
+      }
+    }
+  }
   return {
-    correct:
-      userWord !== undefined &&
-      PARAMS.correctionNormalizer(correctWord) ===
-        PARAMS.correctionNormalizer(userWord),
+    correct,
     userAnswer:
       userWord === undefined ? null : wordPresentationNormalizer(userWord),
   };
