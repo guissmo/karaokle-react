@@ -12,7 +12,6 @@ import ResultsDisplay from "./ResultsDisplay";
 import RoundMarkers from "./RoundMarkers";
 import LyricBox from "./LyricBox";
 import InputBox from "./InputBox";
-import WordsDisplay from "./WordsDisplay";
 import "./css/youtube-embed.css";
 
 const opts = {
@@ -98,25 +97,20 @@ const YouTubePlayer = ({ songInfo }) => {
             onBlur={getAnswerFromInput}
             timeToWrite={!videoIsPlaying && timeToWrite}
             placeholder={"Start typing your answer"}
-          >
-            {currentAnswer ? (
-              <WordsDisplay
-                wordArray={presentableArray(currentAnswer, language)}
-                maxLength={wordsToFindOnRound(currentRound)}
-              />
-            ) : gameState === "running" ? (
-              <WordsDisplay
-                wordArray={[]}
-                maxLength={wordsToFindOnRound(currentRound)}
-              />
-            ) : (
-              "\xa0"
-            )}
-          </InputBox>
+            gameResults={gameResults[currentRound]}
+            maxLength={wordsToFindOnRound(currentRound)}
+            wordArray={
+              currentAnswer ? presentableArray(currentAnswer, language) : []
+            }
+            gameState={gameState}
+          />
+          {gameState}
+          <br />
           <button onClick={startGame}>startGame</button>
           {/* <button onClick={playVideo}>playVideo</button> */}
           <button onClick={previousRound}>previousRound</button>
           <button onClick={nextRound}>nextRound</button>
+          <button onClick={nextRoundIfValidated}>nextRoundIfValidated</button>
           <button onClick={goToTimestampOfArrayEntry}>
             goToTimestampOfArrayEntry
           </button>
@@ -246,6 +240,13 @@ const YouTubePlayer = ({ songInfo }) => {
   function nextRound() {
     const newRound = currentRound + 1;
     if (newRound <= rounds) startRound(newRound);
+    else endGame();
+  }
+
+  function nextRoundIfValidated() {
+    if (gameResults[currentRound]) {
+      nextRound();
+    }
   }
 
   async function seekRelativeToCurrentStop(offset) {
@@ -272,8 +273,6 @@ const YouTubePlayer = ({ songInfo }) => {
     if (result.reduce((x, y) => x && y.correct, true)) {
       setScore(score + 1);
     }
-    if (currentRound < rounds) startRound(currentRound + 1);
-    else endGame();
   }
 
   function endGame() {

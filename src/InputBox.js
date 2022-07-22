@@ -1,21 +1,36 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { forwardRef, useState } from "react";
+import WordsDisplay from "./WordsDisplay";
 import "./css/input-box.css";
 
-function InputBox({ children, placeholder, onBlur, timeToWrite }, ref) {
+function InputBox(
+  {
+    placeholder,
+    onBlur,
+    timeToWrite,
+    gameResults,
+    gameState,
+    wordArray,
+    maxLength,
+  },
+  ref
+) {
   const hiddenStyle = { width: 0, height: 0, overflow: "hidden" };
-  const [inputIsVisible, setInputIsVisible] = useState(false);
+  const [inputIsFocused, setInputIsFocused] = useState(false);
+
+  let inputShouldBeVisible = inputIsFocused && timeToWrite && !gameResults;
+
   return (
     <div>
-      <div style={inputIsVisible && timeToWrite ? {} : hiddenStyle}>
+      <div style={inputShouldBeVisible ? {} : hiddenStyle}>
         <input
           ref={ref}
           className={`noplp-input-box input-lyric`}
           placeholder={placeholder}
-          onFocus={() => setInputIsVisible(true)}
+          onFocus={() => setInputIsFocused(true)}
           onBlur={() => {
-            setInputIsVisible(false);
+            setInputIsFocused(false);
             onBlur();
           }}
           onKeyDown={(e) => handleKeyPress(e)}
@@ -23,9 +38,9 @@ function InputBox({ children, placeholder, onBlur, timeToWrite }, ref) {
       </div>
       <div
         style={
-          inputIsVisible && timeToWrite
+          inputShouldBeVisible
             ? { display: "none" }
-            : timeToWrite
+            : timeToWrite || gameResults
             ? {}
             : { opacity: 0.3 }
         }
@@ -36,18 +51,27 @@ function InputBox({ children, placeholder, onBlur, timeToWrite }, ref) {
           }
         }}
       >
-        {children}
+        {gameState === "running" ? (
+          <WordsDisplay
+            wordArray={wordArray}
+            maxLength={maxLength}
+            colors={
+              gameResults
+                ? gameResults.result.map((x) => {
+                    if (x.correct) {
+                      return "#08ff00";
+                    } else {
+                      return "#ee0000";
+                    }
+                  })
+                : []
+            }
+          />
+        ) : (
+          "\xa0"
+        )}
       </div>
     </div>
-    // <div className="">
-    //   Round {round} is{" "}
-    //   {current
-    //     ? `the current round and needs ${numberOfWords} words`
-    //     : result
-    //     ? `done`
-    //     : `not done and needs ${numberOfWords} words`}
-    //   .
-    // </div>
   );
 
   function handleKeyPress(e) {
