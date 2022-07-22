@@ -45,14 +45,20 @@ test("getFullLyricDataFromLine without offset", () => {
     `[01:10.96]Basta't huwag mang-agaw ng pipino ng iba`,
     `[00:41.09]Lahat kami [[1]]ay natatakam###`,
   ];
-  expect(__testables.getFullLyricDataFromLine(array[0])).toStrictEqual({
-    time: 70.96,
-    lyr: "Basta't huwag mang-agaw ng pipino ng iba",
-  });
-  expect(__testables.getFullLyricDataFromLine(array[1])).toStrictEqual({
-    time: 41.09,
-    lyr: "Lahat kami ay natatakam",
-  });
+  expect(__testables.getFullLyricDataFromLine(array[0], null, 0)).toStrictEqual(
+    {
+      index: 0,
+      time: 70.96,
+      lyr: "Basta't huwag mang-agaw ng pipino ng iba",
+    }
+  );
+  expect(__testables.getFullLyricDataFromLine(array[1], null, 1)).toStrictEqual(
+    {
+      index: 1,
+      time: 41.09,
+      lyr: "Lahat kami ay natatakam",
+    }
+  );
 });
 
 test("getFullLyricDataFromLine with offset with offset", () => {
@@ -60,11 +66,15 @@ test("getFullLyricDataFromLine with offset with offset", () => {
     `[01:10.96]Basta't huwag mang-agaw ng pipino ng iba`,
     `[00:41.09]Lahat kami [[1]]ay natatakam###`,
   ];
-  expect(__testables.getFullLyricDataFromLine(array[0], -0.69)).toStrictEqual({
+  expect(
+    __testables.getFullLyricDataFromLine(array[0], -0.69, 0)
+  ).toStrictEqual({
+    index: 0,
     time: 70.27,
     lyr: "Basta't huwag mang-agaw ng pipino ng iba",
   });
-  expect(__testables.getFullLyricDataFromLine(array[1], 2)).toStrictEqual({
+  expect(__testables.getFullLyricDataFromLine(array[1], 2, 1)).toStrictEqual({
+    index: 1,
     time: 43.09,
     lyr: "Lahat kami ay natatakam",
   });
@@ -75,12 +85,14 @@ test("getStopDataFromLine with offset", () => {
     `[01:10.96]Basta't huwag mang-agaw ng pipino ng iba`,
     `[00:41.09]Lahat kami [[1]]ay natatakam###`,
   ];
-  expect(__testables.getStopDataFromLine(array[0], -0.69)).toStrictEqual({
+  expect(__testables.getStopDataFromLine(array[0], -0.69, 0)).toStrictEqual({
+    index: 0,
     time: 70.27,
     stopTime: NaN,
     lyr: "Basta't huwag mang-agaw ng pipino ng iba",
   });
-  expect(__testables.getStopDataFromLine(array[1], 2)).toStrictEqual({
+  expect(__testables.getStopDataFromLine(array[1], 2, 1)).toStrictEqual({
+    index: 1,
     time: 43.09,
     stopTime: 44.09,
     lyr: "Lahat kami",
@@ -92,12 +104,14 @@ test("getStopDataFromLine without offset", () => {
     `[01:10.96]Basta't huwag mang-agaw ng pipino ng iba`,
     `[00:41.09]Lahat kami [[1]]ay natatakam###`,
   ];
-  expect(__testables.getStopDataFromLine(array[0])).toStrictEqual({
+  expect(__testables.getStopDataFromLine(array[0], null, 0)).toStrictEqual({
+    index: 0,
     time: 70.96,
     stopTime: NaN,
     lyr: "Basta't huwag mang-agaw ng pipino ng iba",
   });
-  expect(__testables.getStopDataFromLine(array[1])).toStrictEqual({
+  expect(__testables.getStopDataFromLine(array[1], null, 1)).toStrictEqual({
+    index: 1,
     time: 41.09,
     stopTime: 42.09,
     lyr: "Lahat kami",

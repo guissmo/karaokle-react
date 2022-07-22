@@ -14,7 +14,7 @@ function WordsDisplay({ wordArray, maxLength, colors }) {
             {wordArray[i]}{" "}
           </font>
         ) : (
-          <font key={i}>
+          <font key={i} style={colors ? { color: colors[i] } : {}}>
             <u>{BLANK}</u>{" "}
           </font>
         )

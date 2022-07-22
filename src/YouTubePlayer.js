@@ -12,6 +12,7 @@ import ResultsDisplay from "./ResultsDisplay";
 import RoundMarkers from "./RoundMarkers";
 import LyricBox from "./LyricBox";
 import InputBox from "./InputBox";
+import NavigationButtons from "./NavigationButtons";
 import "./css/youtube-embed.css";
 
 const opts = {
@@ -29,10 +30,15 @@ const opts = {
 
 const YouTubePlayer = ({ songInfo }) => {
   const [videoIsPlaying, setVideoIsPlaying] = useState(false);
-  const [lyric, setLyric] = useState("");
+  const [lyric, setLyric] = useState({
+    index: -1,
+    text: "",
+  });
+  const [revealedQuestion, setRevealedQuestion] = useState(false);
   const [timeToWrite, setTimeToWrite] = useState(false);
   const [currentRound, setCurrentRound] = useState(null);
   const [roundInfo, setRoundInfo] = useState({
+    index: -1,
     time: null,
     stopTime: null,
     lyr: null,
@@ -45,7 +51,7 @@ const YouTubePlayer = ({ songInfo }) => {
   const inputRef = useRef();
 
   const {
-    lyricData: { gapped: stops },
+    lyricData: { full: fullLyricData, gapped: stops },
     metadata: { videoId, language, alternateSpellings },
   } = songInfo;
   const rounds = stops.length;
@@ -57,11 +63,12 @@ const YouTubePlayer = ({ songInfo }) => {
         if (roundInfo.stopTime < elapsed) {
           inputRef.current.focus();
           setTimeToWrite(true);
+          setRevealedQuestion(true);
           forceTimestamp(roundInfo.stopTime);
         }
       }
-      const { lyric } = getCurrentLyric(songInfo, elapsed);
-      setLyric(lyric);
+      const { index, text } = getCurrentLyric(songInfo, elapsed);
+      setLyric({ index, text });
     },
     videoIsPlaying ? 10 : null
   );
@@ -90,19 +97,38 @@ const YouTubePlayer = ({ songInfo }) => {
             currentRound={currentRound}
             wordsToFindOnRound={wordsToFindOnRound}
           />
-          <LyricBox lyric={lyric} />
+          <LyricBox lyric={lyric.text} />
           <InputBox
             ref={inputRef}
             currentAnswer={currentAnswer}
             onBlur={getAnswerFromInput}
             timeToWrite={!videoIsPlaying && timeToWrite}
-            placeholder={"Start typing your answer"}
+            placeholder={`Type the next ${wordsToFindOnRound(
+              currentRound
+            )} words here`}
             gameResults={gameResults[currentRound]}
             maxLength={wordsToFindOnRound(currentRound)}
             wordArray={
               currentAnswer ? presentableArray(currentAnswer, language) : []
             }
             gameState={gameState}
+          />
+          <NavigationButtons
+            hardRewind={
+              gameResults[currentRound]
+                ? null
+                : () => restartRound(currentRound)
+            }
+            recap={gameResults[currentRound] ? null : recapCurrentStop}
+            stopIndex={roundInfo.index}
+            currIndex={lyric.index}
+            gameResultsBoolean={Boolean(gameResults[currentRound])}
+            validate={
+              revealedQuestion && roundInfo.index === lyric.index
+                ? validateAnswer
+                : null
+            }
+            nextRound={gameResults[currentRound] ? nextRound : null}
           />
           {gameState}
           <br />
@@ -118,7 +144,7 @@ const YouTubePlayer = ({ songInfo }) => {
             seekRelativeToCurrentStop
           </button>
           <button onClick={() => recapCurrentStop(-2)}>recapCurrentStop</button>
-          {lyric} ({wordCount(lyric)})
+          {lyric.text} ({wordCount(lyric.text)})
           <br />
           <button onClick={validateAnswer}>Validate</button>
           {currentAnswer}
@@ -159,10 +185,12 @@ const YouTubePlayer = ({ songInfo }) => {
   function startGame() {
     setScore(0);
     setGameState("running");
+    setGameResults([]);
     startRound(1);
   }
 
-  function startRound(roundNumber) {
+  function startRound(roundNumber, restart = false) {
+    setRevealedQuestion(restart);
     setTimeToWrite(false);
     setCurrentRound(roundNumber);
     setRoundInfo(stops[roundNumber - 1]);
@@ -170,6 +198,10 @@ const YouTubePlayer = ({ songInfo }) => {
     setCurrentAnswer("");
     inputRef.current.value = "";
     playVideo();
+  }
+
+  function restartRound(roundNumber) {
+    startRound(roundNumber, true);
   }
 
   function goToLastLineOfRound(roundNumber) {
@@ -203,9 +235,6 @@ const YouTubePlayer = ({ songInfo }) => {
   function getCurrentLyric(songInfo, timestamp) {
     let newLyric = "...";
     let index = -1;
-    let {
-      lyricData: { full: fullLyricData },
-    } = songInfo;
     for (let [i, lyricData] of fullLyricData.entries()) {
       const { time, lyr } = lyricData;
       if (time < timestamp) {
@@ -217,15 +246,12 @@ const YouTubePlayer = ({ songInfo }) => {
     }
     return {
       index,
-      lyric: newLyric,
+      text: newLyric,
     };
   }
 
   function goToTimestampOfArrayEntry(num) {
-    num = prompt();
-    let {
-      lyricData: { full: fullLyricData },
-    } = songInfo;
+    if (!num) num = prompt();
     if (num < 0) num = 0;
     if (num >= fullLyricData.length) num = fullLyricData - 1;
     seekTo(fullLyricData[num].time);
@@ -281,9 +307,10 @@ const YouTubePlayer = ({ songInfo }) => {
     playVideo();
   }
 
-  function recapCurrentStop(offset) {
-    seekRelativeToCurrentStop(offset);
-    playVideo();
+  function recapCurrentStop() {
+    let where = roundInfo.index - 1;
+    if (where < 0) where = 0;
+    goToTimestampOfArrayEntry(where);
   }
 };
 

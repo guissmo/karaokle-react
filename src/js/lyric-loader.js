@@ -1,16 +1,18 @@
 import { LANG_PARAMS } from "./word-counter";
 
-function getFullLyricDataFromLine(line, offset = 0) {
+function getFullLyricDataFromLine(line, offset = 0, index) {
   const { min, sec, csec, lyr } = getInfoFromLineViaRegex(line, true);
   return {
+    index,
     time: getTimestamp(min, sec, csec, offset),
     lyr: lyr.replaceAll("###", ""),
   };
 }
 
-function getStopDataFromLine(line, offset = 0) {
+function getStopDataFromLine(line, offset = 0, index) {
   const { min, sec, csec, lyr, stopOffset } = getInfoFromLineViaRegex(line);
   return {
+    index,
     time: getTimestamp(min, sec, csec, offset),
     stopTime: getTimestamp(min, sec, csec, offset, stopOffset),
     lyr: lyr.replace(/(\[\[|###).+/g, ""),
@@ -79,13 +81,14 @@ function getInfoFromFile(text) {
     .map((x) => String(getTimestampViaRegex(x)[1]))
     .reduce((x, y) => `${x.trim()} ${y.trim()}`);
 
-  const fullLyricData = lyricLines.map((x) =>
-    getFullLyricDataFromLine(x, metadata.lyricOffset)
+  const fullLyricData = lyricLines.map((x, i) =>
+    getFullLyricDataFromLine(x, metadata.lyricOffset, i)
   );
 
   const roundData = lyricLines
-    .filter((x) => x.includes("[["))
-    .map((x) => getStopDataFromLine(x, metadata.lyricOffset));
+    .map((x, i) => [x, i])
+    .filter(([x]) => x.includes("[["))
+    .map(([x, i]) => getStopDataFromLine(x, metadata.lyricOffset, i));
   const answers = noTimestamps.matchAll(/(?<=\]\])[^#]+(?=###)/g);
   let i = 0;
   for (let answer of answers) {
