@@ -124,7 +124,8 @@ const YouTubePlayer = ({ songInfo }) => {
             currIndex={lyric.index}
             gameResultsBoolean={Boolean(gameResults[currentRound])}
             validate={
-              revealedQuestion && roundInfo.index === lyric.index
+              revealedQuestion &&
+              (roundInfo.index === lyric.index || timeToWrite)
                 ? validateAnswer
                 : null
             }
@@ -239,7 +240,7 @@ const YouTubePlayer = ({ songInfo }) => {
       const { time, lyr } = lyricData;
       if (time < timestamp) {
         index = i;
-        newLyric = lyr;
+        if (lyr) newLyric = lyr;
       }
       if (gameState === "running" && roundInfo.time <= timestamp)
         newLyric = roundInfo.lyr;
@@ -251,7 +252,7 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function goToTimestampOfArrayEntry(num) {
-    if (!num) num = prompt();
+    if (num === undefined) num = prompt();
     if (num < 0) num = 0;
     if (num >= fullLyricData.length) num = fullLyricData - 1;
     seekTo(fullLyricData[num].time);
@@ -303,7 +304,7 @@ const YouTubePlayer = ({ songInfo }) => {
 
   function endGame() {
     setGameState("ended");
-    goToLastLineOfRound(5);
+    goToLastLineOfRound(rounds);
     playVideo();
   }
 
