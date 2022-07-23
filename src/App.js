@@ -2,7 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { useState, StrictMode } from "react";
 import { loadLyricData } from "./js/lyric-loader";
-import songData from "./lyrics/halik.lrc";
+import songData from "./lyrics/bahay-kubo.lrc";
 import YouTubePlayer from "./YouTubePlayer";
 import useInterval from "use-interval";
 

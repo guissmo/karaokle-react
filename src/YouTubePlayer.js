@@ -92,6 +92,7 @@ const YouTubePlayer = ({ songInfo }) => {
       ) : (
         <div>
           <RoundMarkers
+            gameState={gameState}
             gameResults={gameResults}
             rounds={rounds}
             stops={stops}
@@ -131,7 +132,7 @@ const YouTubePlayer = ({ songInfo }) => {
             gameResults={gameResults[currentRound]}
             validate={
               revealedQuestion &&
-              (roundInfo.index === lyric.index || timeToWrite)
+              (roundInfo.index === lyric.index || lyric.text === roundInfo.lyr)
                 ? validateAnswer
                 : null
             }

@@ -7,6 +7,7 @@ function RoundMarkers({
   stops,
   wordsToFindOnRound,
   gameResults,
+  gameState,
 }) {
   return (
     <div style={{ display: "flex", flexDirection: "row", maxWidth: 600 }}>
@@ -14,7 +15,8 @@ function RoundMarkers({
         <RoundMarker
           key={x + 1}
           round={x + 1}
-          current={x + 1 === currentRound}
+          current={gameState === "running" ? x + 1 === currentRound : false}
+          done={x + 1 < currentRound}
           numberOfWords={stops ? wordsToFindOnRound(x + 1) : 0}
           result={gameResults[x + 1]}
         />
