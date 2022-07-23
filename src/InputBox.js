@@ -34,7 +34,7 @@ function InputBox(
             setInputIsFocused(false);
             onBlur();
           }}
-          onKeyDown={(e) => handleKeyPress(e)}
+          onKeyPress={(e) => handleKeyPress(e)}
         />
       </div>
       <div
@@ -78,8 +78,9 @@ function InputBox(
   );
 
   function handleKeyPress(e) {
-    if (e.keyCode === 13) {
+    if (e.key === "Enter") {
       e.target.blur();
+      document.getElementById("validate").focus();
     }
   }
 }

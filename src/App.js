@@ -2,7 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { useState, StrictMode } from "react";
 import { loadLyricData } from "./js/lyric-loader";
-import songData from "./lyrics/humanap-ka-ng-panget.lrc";
+import songData from "./lyrics/uptown-funk.lrc";
 import YouTubePlayer from "./YouTubePlayer";
 import useInterval from "use-interval";
 
@@ -21,7 +21,7 @@ const App = () => {
     songInfo === null ? 100 : null
   );
 
-  if (songInfo === null) return `songInfo null ${isLoadingSongInfo}`;
+  if (songInfo === null) return ``; //`songInfo null ${isLoadingSongInfo}`;
   return <YouTubePlayer songInfo={songInfo} />;
 };
 

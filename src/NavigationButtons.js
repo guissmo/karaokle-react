@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBackwardFast,
@@ -27,6 +27,7 @@ const NavigationButtons = ({
     rightNavigation.push(
       <button
         key="validate"
+        id="validate"
         className="primary"
         onClick={validate}
         disabled={!validate}
@@ -38,6 +39,8 @@ const NavigationButtons = ({
     if (!gameResults.correct && gameState === "running") {
       rightNavigation.push(
         <button
+          // eslint-disable-next-line jsx-a11y/no-autofocus
+          autoFocus
           key="revealAnswer"
           className={`secondary ${answerRevealed ? "revealed" : "unrevealed"}`}
           onClick={revealAnswer}
@@ -49,7 +52,10 @@ const NavigationButtons = ({
     }
     rightNavigation.push(
       <button
+        // eslint-disable-next-line jsx-a11y/no-autofocus
+        autoFocus={gameResults.correct}
         key="nextRound"
+        id="next-round"
         className="primary"
         onClick={nextRound}
         disabled={!nextRound || gameState === "ended"}
@@ -77,4 +83,4 @@ const NavigationButtons = ({
   );
 };
 
-export default NavigationButtons;
+export default forwardRef(NavigationButtons);

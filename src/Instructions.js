@@ -44,8 +44,11 @@ const Instructions = ({ startGame }) => {
           {`Don't forget to share your results with your friends!`}
         </p>
         <div style={{ display: "flex", width: "100%", alignItems: "middle" }}>
-          <button className="startGame" onClick={startGame}>
-            START GAME
+          <button
+            className={`startGame ${startGame ? null : "loading"}`}
+            onClick={startGame ? startGame : null}
+          >
+            {startGame ? "START GAME" : "LOADING GAME..."}
           </button>
         </div>
       </div>

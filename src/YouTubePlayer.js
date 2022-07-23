@@ -21,7 +21,7 @@ const opts = {
   width: "320",
   playerVars: {
     // https://developers.google.com/youtube/player_parameters
-    autoplay: 0,
+    autoplay: 1,
     controls: 0,
     modestbranding: 1,
     cc_load_policy: 0,
@@ -75,6 +75,10 @@ const YouTubePlayer = ({ songInfo }) => {
     },
     videoIsPlaying ? 10 : null
   );
+
+  useInterval(async () => {
+    if ((await getVideoLoadedFraction()) >= 0) setGameState("ready-to-start");
+  }, gameState === "loading-video");
 
   const showInstructions = gameState !== "running" && gameState !== "ended";
 
@@ -142,7 +146,11 @@ const YouTubePlayer = ({ songInfo }) => {
   // RETURN STATEMENT
   return (
     <div className="mainDiv">
-      {showInstructions ? <Instructions startGame={startGame} /> : null}
+      {showInstructions ? (
+        <Instructions
+          startGame={gameState === "ready-to-start" ? startGame : null}
+        />
+      ) : null}
       <div id="header">
         <span className="title-artist">
           {title} ({artist})
@@ -183,7 +191,7 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function onReady() {
-    setGameState("ready-to-start");
+    setGameState("loading-video");
   }
 
   function startGame() {
@@ -231,6 +239,10 @@ const YouTubePlayer = ({ songInfo }) => {
 
   function pauseVideo() {
     return playerRef.current.internalPlayer.pauseVideo();
+  }
+
+  async function getVideoLoadedFraction() {
+    return playerRef.current.internalPlayer.getVideoLoadedFraction();
   }
 
   function forceTimestamp(timestamp) {

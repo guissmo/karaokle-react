@@ -37,3 +37,7 @@ button.startGame {
   padding: 5px;
   background-color: rgb(206, 60, 193);
 }
+
+button.loading {
+  opacity: 0.5;
+}
