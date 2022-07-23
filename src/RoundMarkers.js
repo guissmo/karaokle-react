@@ -16,7 +16,7 @@ function RoundMarkers({
           key={x + 1}
           round={x + 1}
           current={gameState === "running" ? x + 1 === currentRound : false}
-          done={x + 1 < currentRound}
+          done={x + 1 < currentRound || gameState === "ended"}
           numberOfWords={stops ? wordsToFindOnRound(x + 1) : 0}
           result={gameResults[x + 1]}
         />

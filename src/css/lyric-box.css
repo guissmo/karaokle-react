@@ -5,14 +5,16 @@
   border: 0px gray solid;
   border-radius: 10px;
   text-align: center;
-  width: 90%;
+  width: min(95%, 600px);
   text-shadow: 1px 1px black;
   box-shadow: 0 0 0 1px black, 0 0 0 2px #ccc;
   padding-top: 2px;
   padding-bottom: 2px;
   padding-left: 4px;
   padding-right: 4px;
-  max-width: 580px;
+  margin-top: 4px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .lyric {

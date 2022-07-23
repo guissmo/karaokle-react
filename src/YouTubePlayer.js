@@ -112,7 +112,9 @@ const YouTubePlayer = ({ songInfo }) => {
             maxLength={wordsToFindOnRound(currentRound)}
             wordArray={
               gameResults[currentRound] && revealAnswer
-                ? gameResults[currentRound].result.map((x) => x.correctAnswer)
+                ? gameResults[currentRound].result.map((x) =>
+                    x.correct ? x.userAnswer : x.correctAnswer
+                  )
                 : currentAnswer
                 ? presentableArray(currentAnswer, language)
                 : []
@@ -130,6 +132,7 @@ const YouTubePlayer = ({ songInfo }) => {
             stopIndex={roundInfo.index}
             currIndex={lyric.index}
             gameResults={gameResults[currentRound]}
+            gameState={gameState}
             validate={
               revealedQuestion &&
               (roundInfo.index === lyric.index || lyric.text === roundInfo.lyr)
@@ -138,6 +141,7 @@ const YouTubePlayer = ({ songInfo }) => {
             }
             nextRound={gameResults[currentRound] ? nextRound : null}
             revealAnswer={() => setRevealAnswer(!revealAnswer)}
+            answerRevealed={revealAnswer}
           />
           {gameState}
           <br />

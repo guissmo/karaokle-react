@@ -4,8 +4,11 @@ import {
   faBackwardFast,
   faBackward,
   faForward,
+  faPlay,
+  faMagnifyingGlass,
   faCheck,
 } from "@fortawesome/free-solid-svg-icons";
+import "./css/navigation-buttons.css";
 
 const NavigationButtons = ({
   hardRewind,
@@ -14,52 +17,62 @@ const NavigationButtons = ({
   stopIndex,
   validate,
   nextRound,
+  gameState,
   revealAnswer,
+  answerRevealed,
   gameResults,
 }) => {
-  let rightNavigation = <></>;
+  let rightNavigation = [];
   if (!gameResults) {
-    rightNavigation = (
-      <button onClick={validate} style={{ flex: 1 }}>
-        <FontAwesomeIcon icon={faCheck} /> {validate ? "VALIDATE" : "DISABLED"}
+    rightNavigation.push(
+      <button
+        key="validate"
+        className="primary"
+        onClick={validate}
+        disabled={!validate}
+      >
+        <FontAwesomeIcon icon={faCheck} />
       </button>
     );
   } else {
-    if (gameResults.correct) {
-      rightNavigation = (
-        <button onClick={nextRound} style={{ flex: 1 }}>
-          <FontAwesomeIcon icon={faCheck} />{" "}
-          {nextRound ? "NEXT ROUND" : "DISABLED"}
+    if (!gameResults.correct && gameState === "running") {
+      rightNavigation.push(
+        <button
+          key="revealAnswer"
+          className={`secondary ${answerRevealed ? "revealed" : "unrevealed"}`}
+          onClick={revealAnswer}
+          disabled={!revealAnswer}
+        >
+          <FontAwesomeIcon icon={faMagnifyingGlass} />{" "}
         </button>
       );
-    } else {
-      rightNavigation = (
-        <>
-          <button onClick={revealAnswer} style={{ flex: 1 }}>
-            <FontAwesomeIcon icon={faCheck} />{" "}
-            {revealAnswer ? "REVEAL ANSWER" : "DISABLED"}
-          </button>
-          <button onClick={nextRound} style={{ flex: 1 }}>
-            <FontAwesomeIcon icon={faCheck} />{" "}
-            {nextRound ? "NEXT ROUND" : "DISABLED"}
-          </button>
-        </>
-      );
     }
+    rightNavigation.push(
+      <button
+        key="nextRound"
+        className="primary"
+        onClick={nextRound}
+        disabled={!nextRound || gameState === "ended"}
+      >
+        <FontAwesomeIcon icon={faPlay} />{" "}
+      </button>
+    );
   }
   return (
-    <div style={{ display: "flex", maxWidth: 600, gap: 10 }}>
-      <button onClick={hardRewind} style={{ flex: 1 }}>
-        <FontAwesomeIcon icon={faBackwardFast} />
-      </button>
-      <button onClick={recap} style={{ flex: 1 }}>
-        <FontAwesomeIcon
-          icon={stopIndex - 1 <= currIndex ? faBackward : faForward}
-        />
-      </button>
-      <span style={{ display: "flex", flex: 3, gap: 10 }}>
-        {rightNavigation}
-      </span>
+    <div id="nav-buttons-container">
+      <div id="nav-buttons">
+        <button onClick={hardRewind} disabled={gameResults}>
+          <FontAwesomeIcon icon={faBackwardFast} />
+        </button>
+        <button onClick={recap} disabled={gameResults}>
+          <FontAwesomeIcon
+            icon={stopIndex - 1 <= currIndex ? faBackward : faForward}
+          />
+        </button>
+        <span style={{ display: "flex", flex: 3, gap: 10 }}>
+          {rightNavigation.map((x) => x)}
+        </span>
+      </div>
     </div>
   );
 };

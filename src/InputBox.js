@@ -24,7 +24,7 @@ function InputBox(
 
   return (
     <div>
-      <div style={inputShouldBeVisible ? {} : hiddenStyle}>
+      <div style={inputShouldBeVisible ? { textAlign: "center" } : hiddenStyle}>
         <input
           ref={ref}
           className={`noplp-input-box input-lyric`}

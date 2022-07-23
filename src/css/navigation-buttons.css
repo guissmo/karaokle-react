@@ -1,0 +1,38 @@
+#nav-buttons {
+  display: flex;
+  gap: 10;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px;
+  /* background-color: purple; */
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  color: white;
+  height: 30px;
+  background-color: rgb(152, 92, 248);
+  flex: 1;
+}
+
+button.primary {
+  background-color: rgb(206, 60, 193);
+}
+
+button.secondary {
+  background-color: rgb(48, 180, 192);
+}
+
+button.revealed {
+  color: #ee0000;
+}
+
+button.unrevealed {
+  color: #08ff00;
+}
+
+button:disabled {
+  opacity: 0.2;
+}
