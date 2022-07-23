@@ -13,6 +13,7 @@ function InputBox(
     gameState,
     wordArray,
     maxLength,
+    revealAnswer,
   },
   ref
 ) {
@@ -57,13 +58,15 @@ function InputBox(
             maxLength={maxLength}
             colors={
               gameResults
-                ? gameResults.result.map((x) => {
-                    if (x.correct) {
-                      return "#08ff00";
-                    } else {
-                      return "#ee0000";
-                    }
-                  })
+                ? revealAnswer
+                  ? gameResults.result.map(() => "#08ff00")
+                  : gameResults.result.map((x) => {
+                      if (x.correct) {
+                        return "#08ff00";
+                      } else {
+                        return "#ee0000";
+                      }
+                    })
                 : []
             }
           />

@@ -14,8 +14,39 @@ const NavigationButtons = ({
   stopIndex,
   validate,
   nextRound,
-  gameResultsBoolean,
+  revealAnswer,
+  gameResults,
 }) => {
+  let rightNavigation = <></>;
+  if (!gameResults) {
+    rightNavigation = (
+      <button onClick={validate} style={{ flex: 1 }}>
+        <FontAwesomeIcon icon={faCheck} /> {validate ? "VALIDATE" : "DISABLED"}
+      </button>
+    );
+  } else {
+    if (gameResults.correct) {
+      rightNavigation = (
+        <button onClick={nextRound} style={{ flex: 1 }}>
+          <FontAwesomeIcon icon={faCheck} />{" "}
+          {nextRound ? "NEXT ROUND" : "DISABLED"}
+        </button>
+      );
+    } else {
+      rightNavigation = (
+        <>
+          <button onClick={revealAnswer} style={{ flex: 1 }}>
+            <FontAwesomeIcon icon={faCheck} />{" "}
+            {revealAnswer ? "REVEAL ANSWER" : "DISABLED"}
+          </button>
+          <button onClick={nextRound} style={{ flex: 1 }}>
+            <FontAwesomeIcon icon={faCheck} />{" "}
+            {nextRound ? "NEXT ROUND" : "DISABLED"}
+          </button>
+        </>
+      );
+    }
+  }
   return (
     <div style={{ display: "flex", maxWidth: 600, gap: 10 }}>
       <button onClick={hardRewind} style={{ flex: 1 }}>
@@ -27,17 +58,7 @@ const NavigationButtons = ({
         />
       </button>
       <span style={{ display: "flex", flex: 3, gap: 10 }}>
-        {!gameResultsBoolean ? (
-          <button onClick={validate} style={{ flex: 1 }}>
-            <FontAwesomeIcon icon={faCheck} />{" "}
-            {validate ? "VALIDATE" : "DISABLED"}
-          </button>
-        ) : (
-          <button onClick={nextRound} style={{ flex: 1 }}>
-            <FontAwesomeIcon icon={faCheck} />{" "}
-            {nextRound ? "NEXT ROUND" : "DISABLED"}
-          </button>
-        )}
+        {rightNavigation}
       </span>
     </div>
   );

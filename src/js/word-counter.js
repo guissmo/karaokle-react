@@ -87,6 +87,7 @@ export function wordComparison(
   }
   return {
     correct,
+    correctAnswer: correctWord,
     userAnswer:
       userWord === undefined ? null : wordPresentationNormalizer(userWord),
   };

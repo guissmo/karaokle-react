@@ -36,7 +36,7 @@ function handleAlternateSpellings(val, lang) {
 function getMetadataFromLine(l, lang) {
   let [key, val] = l.split(":").map((x) => x.trim());
   const ret = {};
-  if (key === "lyricOffset") val = Number(val);
+  if (key === "lyricOffset" || key === "startAt") val = Number(val);
   if (key === "alternateSpellings") {
     val = handleAlternateSpellings(val, lang);
   }
@@ -50,6 +50,7 @@ function getMetadataAndRawLinesFromFile(text) {
   let metadata = {
     lyricOffset: 0,
     alternateSpellings: {},
+    startAt: 0,
   }; // default values
   let lyricLines = [];
   for (let l of lines) {

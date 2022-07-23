@@ -49,10 +49,11 @@ const YouTubePlayer = ({ songInfo }) => {
   const [gameResults, setGameResults] = useState([]);
   const playerRef = useRef();
   const inputRef = useRef();
+  const [revealAnswer, setRevealAnswer] = useState(false);
 
   const {
     lyricData: { full: fullLyricData, gapped: stops },
-    metadata: { videoId, language, alternateSpellings },
+    metadata: { videoId, language, alternateSpellings, startAt },
   } = songInfo;
   const rounds = stops.length;
 
@@ -109,9 +110,14 @@ const YouTubePlayer = ({ songInfo }) => {
             gameResults={gameResults[currentRound]}
             maxLength={wordsToFindOnRound(currentRound)}
             wordArray={
-              currentAnswer ? presentableArray(currentAnswer, language) : []
+              gameResults[currentRound] && revealAnswer
+                ? gameResults[currentRound].result.map((x) => x.correctAnswer)
+                : currentAnswer
+                ? presentableArray(currentAnswer, language)
+                : []
             }
             gameState={gameState}
+            revealAnswer={revealAnswer}
           />
           <NavigationButtons
             hardRewind={
@@ -122,7 +128,7 @@ const YouTubePlayer = ({ songInfo }) => {
             recap={gameResults[currentRound] ? null : recapCurrentStop}
             stopIndex={roundInfo.index}
             currIndex={lyric.index}
-            gameResultsBoolean={Boolean(gameResults[currentRound])}
+            gameResults={gameResults[currentRound]}
             validate={
               revealedQuestion &&
               (roundInfo.index === lyric.index || timeToWrite)
@@ -130,6 +136,7 @@ const YouTubePlayer = ({ songInfo }) => {
                 : null
             }
             nextRound={gameResults[currentRound] ? nextRound : null}
+            revealAnswer={() => setRevealAnswer(!revealAnswer)}
           />
           {gameState}
           <br />
@@ -194,10 +201,11 @@ const YouTubePlayer = ({ songInfo }) => {
     setRevealedQuestion(restart);
     setTimeToWrite(false);
     setCurrentRound(roundNumber);
+    setRevealAnswer(false);
     setRoundInfo(stops[roundNumber - 1]);
     goToLastLineOfRound(roundNumber - 1);
-    setCurrentAnswer("");
-    inputRef.current.value = "";
+    if (!restart) setCurrentAnswer("");
+    if (!restart) inputRef.current.value = "";
     playVideo();
   }
 
@@ -207,7 +215,7 @@ const YouTubePlayer = ({ songInfo }) => {
 
   function goToLastLineOfRound(roundNumber) {
     const previousRoundStartTime =
-      roundNumber < 1 ? 0 : stops[roundNumber - 1].time;
+      roundNumber < 1 ? startAt : stops[roundNumber - 1].time;
     seekTo(previousRoundStartTime);
   }
 
@@ -294,12 +302,9 @@ const YouTubePlayer = ({ songInfo }) => {
     tempArray[currentRound] = {
       key: currentRound,
       result,
+      correct: result.reduce((x, y) => x && y.correct, true),
     };
     setGameResults(tempArray);
-    console.log(result);
-    if (result.reduce((x, y) => x && y.correct, true)) {
-      setScore(score + 1);
-    }
   }
 
   function endGame() {

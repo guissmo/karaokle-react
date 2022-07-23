@@ -135,6 +135,7 @@ alternateSpellings: you|ya
       lyricOffset: -4,
       language: "TL",
       videoId: "pZxBNJM_er8",
+      startAt: 0,
       alternateSpellings: { YOU: ["ya"] },
     },
   });

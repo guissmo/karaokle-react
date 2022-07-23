@@ -4,38 +4,47 @@ exports[`wordArrFromString - TL 1`] = `
 Array [
   Object {
     "correct": true,
+    "correctAnswer": "Ded",
     "userAnswer": "DED",
   },
   Object {
     "correct": true,
+    "correctAnswer": "na",
     "userAnswer": "NA",
   },
   Object {
     "correct": true,
+    "correctAnswer": "ded",
     "userAnswer": "DED",
   },
   Object {
     "correct": false,
+    "correctAnswer": "talaga",
     "userAnswer": "tlaaga",
   },
   Object {
     "correct": true,
+    "correctAnswer": "ako",
     "userAnswer": "ako",
   },
   Object {
     "correct": true,
+    "correctAnswer": "sa",
     "userAnswer": "sa",
   },
   Object {
     "correct": true,
+    "correctAnswer": "mga",
     "userAnswer": "MGA",
   },
   Object {
     "correct": true,
+    "correctAnswer": "pakembot-kembot",
     "userAnswer": "pakembotkembot",
   },
   Object {
     "correct": true,
+    "correctAnswer": "mo",
     "userAnswer": "mo",
   },
 ]
@@ -45,26 +54,32 @@ exports[`wordArrFromString - TL 2`] = `
 Array [
   Object {
     "correct": true,
+    "correctAnswer": "Basta't",
     "userAnswer": "Basta't",
   },
   Object {
     "correct": true,
+    "correctAnswer": "'wag",
     "userAnswer": "wag",
   },
   Object {
     "correct": true,
+    "correctAnswer": "s'yang",
     "userAnswer": "syang",
   },
   Object {
     "correct": true,
+    "correctAnswer": "hawakan",
     "userAnswer": "hawakan",
   },
   Object {
     "correct": true,
+    "correctAnswer": "'pag",
     "userAnswer": "pag",
   },
   Object {
     "correct": true,
+    "correctAnswer": "galit",
     "userAnswer": "galit",
   },
 ]
@@ -74,34 +89,42 @@ exports[`wordArrFromString - TL 3`] = `
 Array [
   Object {
     "correct": true,
+    "correctAnswer": "Nasa",
     "userAnswer": "nasa",
   },
   Object {
     "correct": true,
+    "correctAnswer": "isip",
     "userAnswer": "isip",
   },
   Object {
     "correct": true,
+    "correctAnswer": "ko",
     "userAnswer": "ko",
   },
   Object {
     "correct": false,
+    "correctAnswer": "s'ya",
     "userAnswer": "siya",
   },
   Object {
     "correct": false,
+    "correctAnswer": "gabi-gabi",
     "userAnswer": "araw-araw",
   },
   Object {
     "correct": false,
+    "correctAnswer": "araw-araw,",
     "userAnswer": "aking",
   },
   Object {
     "correct": false,
+    "correctAnswer": "aking",
     "userAnswer": "sinta",
   },
   Object {
     "correct": false,
+    "correctAnswer": "sinta.",
     "userAnswer": null,
   },
 ]
@@ -111,30 +134,37 @@ exports[`wordComparison - FR 1`] = `
 Array [
   Object {
     "correct": true,
+    "correctAnswer": "Je",
     "userAnswer": "Je",
   },
   Object {
     "correct": false,
+    "correctAnswer": "m'",
     "userAnswer": "me",
   },
   Object {
     "correct": true,
+    "correctAnswer": "présente,",
     "userAnswer": "presente",
   },
   Object {
     "correct": true,
+    "correctAnswer": "je",
     "userAnswer": "je",
   },
   Object {
     "correct": true,
+    "correctAnswer": "m'",
     "userAnswer": "m'",
   },
   Object {
     "correct": true,
+    "correctAnswer": "appelle",
     "userAnswer": "appelle",
   },
   Object {
     "correct": true,
+    "correctAnswer": "Henri",
     "userAnswer": "Henri",
   },
 ]
@@ -144,22 +174,27 @@ exports[`wordComparison - FR 2`] = `
 Array [
   Object {
     "correct": true,
+    "correctAnswer": "J'",
     "userAnswer": "j'",
   },
   Object {
     "correct": true,
+    "correctAnswer": "ai",
     "userAnswer": "ai",
   },
   Object {
     "correct": true,
+    "correctAnswer": "vu",
     "userAnswer": "vu",
   },
   Object {
     "correct": true,
+    "correctAnswer": "un",
     "userAnswer": "un",
   },
   Object {
     "correct": true,
+    "correctAnswer": "arc-en-ciel",
     "userAnswer": "arc-en-ciel",
   },
 ]
@@ -169,26 +204,32 @@ exports[`wordComparison - FR 3`] = `
 Array [
   Object {
     "correct": true,
+    "correctAnswer": "Puis",
     "userAnswer": "PUIS",
   },
   Object {
     "correct": true,
+    "correctAnswer": "après",
     "userAnswer": "APRES",
   },
   Object {
     "correct": true,
+    "correctAnswer": "je",
     "userAnswer": "JE",
   },
   Object {
     "correct": false,
+    "correctAnswer": "f'rai",
     "userAnswer": "FERAI",
   },
   Object {
     "correct": true,
+    "correctAnswer": "des",
     "userAnswer": "DES",
   },
   Object {
     "correct": true,
+    "correctAnswer": "galas",
     "userAnswer": "GALAS",
   },
 ]
@@ -198,26 +239,32 @@ exports[`wordComparison - FR 4`] = `
 Array [
   Object {
     "correct": true,
+    "correctAnswer": "La.",
     "userAnswer": "LA",
   },
   Object {
     "correct": true,
+    "correctAnswer": "La?",
     "userAnswer": "LA",
   },
   Object {
     "correct": true,
+    "correctAnswer": "La!",
     "userAnswer": "LA",
   },
   Object {
     "correct": true,
+    "correctAnswer": "La,",
     "userAnswer": "LA",
   },
   Object {
     "correct": true,
+    "correctAnswer": "la",
     "userAnswer": "LA",
   },
   Object {
     "correct": true,
+    "correctAnswer": "(la)",
     "userAnswer": "LA",
   },
 ]
@@ -227,58 +274,72 @@ exports[`wordComparison - FR 5`] = `
 Array [
   Object {
     "correct": true,
+    "correctAnswer": "C'",
     "userAnswer": "c'",
   },
   Object {
     "correct": true,
+    "correctAnswer": "est",
     "userAnswer": "Est",
   },
   Object {
     "correct": true,
+    "correctAnswer": "t'",
     "userAnswer": "t'",
   },
   Object {
     "correct": true,
+    "correctAnswer": "a",
     "userAnswer": "A",
   },
   Object {
     "correct": true,
+    "correctAnswer": "m'",
     "userAnswer": "m'",
   },
   Object {
     "correct": true,
+    "correctAnswer": "a",
     "userAnswer": "A",
   },
   Object {
     "correct": true,
+    "correctAnswer": "s'",
     "userAnswer": "s'",
   },
   Object {
     "correct": true,
+    "correctAnswer": "arroser",
     "userAnswer": "Arroser",
   },
   Object {
     "correct": true,
+    "correctAnswer": "j'",
     "userAnswer": "j'",
   },
   Object {
     "correct": true,
+    "correctAnswer": "ai",
     "userAnswer": "Ai",
   },
   Object {
     "correct": true,
+    "correctAnswer": "j'",
     "userAnswer": "j'",
   },
   Object {
     "correct": true,
+    "correctAnswer": "suis",
     "userAnswer": "suis",
   },
   Object {
     "correct": true,
+    "correctAnswer": "l'",
     "userAnswer": "l'",
   },
   Object {
     "correct": true,
+    "correctAnswer": "amour",
     "userAnswer": "AMOUR",
   },
 ]
