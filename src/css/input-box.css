@@ -1,6 +1,6 @@
 .noplp-input-box {
   font-family: "Roboto Condensed", sans-serif;
-  font-size: min(max(12pt, 3vw), 16pt);
+  font-size: min(max(16pt, 4vw), 20pt);
   text-transform: uppercase;
   border: 0px gray solid;
   border-radius: 10px;

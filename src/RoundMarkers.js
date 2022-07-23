@@ -1,5 +1,6 @@
 import React from "react";
 import RoundMarker from "./RoundMarker";
+import "./css/round-markers.css";
 
 function RoundMarkers({
   rounds,
@@ -10,7 +11,7 @@ function RoundMarkers({
   gameState,
 }) {
   return (
-    <div style={{ display: "flex", flexDirection: "row", maxWidth: 600 }}>
+    <div className="round-markers">
       {Array.from(Array(rounds).keys()).map((x) => (
         <RoundMarker
           key={x + 1}

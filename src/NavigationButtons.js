@@ -41,7 +41,7 @@ const NavigationButtons = ({
           key="revealAnswer"
           className={`secondary ${answerRevealed ? "revealed" : "unrevealed"}`}
           onClick={revealAnswer}
-          disabled={!revealAnswer}
+          disabled={!revealAnswer || gameState !== "running"}
         >
           <FontAwesomeIcon icon={faMagnifyingGlass} />{" "}
         </button>
@@ -61,10 +61,10 @@ const NavigationButtons = ({
   return (
     <div id="nav-buttons-container">
       <div id="nav-buttons">
-        <button onClick={hardRewind} disabled={gameResults}>
+        <button onClick={hardRewind} disabled={gameResults || !hardRewind}>
           <FontAwesomeIcon icon={faBackwardFast} />
         </button>
-        <button onClick={recap} disabled={gameResults}>
+        <button onClick={recap} disabled={gameResults || !hardRewind}>
           <FontAwesomeIcon
             icon={stopIndex - 1 <= currIndex ? faBackward : faForward}
           />

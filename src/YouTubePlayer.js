@@ -8,12 +8,13 @@ import {
   presentableString,
   presentableArray,
 } from "./js/word-counter";
-import ResultsDisplay from "./ResultsDisplay";
 import RoundMarkers from "./RoundMarkers";
 import LyricBox from "./LyricBox";
 import InputBox from "./InputBox";
 import NavigationButtons from "./NavigationButtons";
+import Instructions from "./Instructions";
 import "./css/youtube-embed.css";
+import "./css/instructions.css";
 
 const opts = {
   height: "240",
@@ -45,7 +46,7 @@ const YouTubePlayer = ({ songInfo }) => {
   });
   const [currentAnswer, setCurrentAnswer] = useState("");
   const [gameState, setGameState] = useState("not-loaded"); //not-loaded, ready-to-start, running, ended
-  const [score, setScore] = useState(0);
+  // const [score, setScore] = useState(0);
   const [gameResults, setGameResults] = useState([]);
   const playerRef = useRef();
   const inputRef = useRef();
@@ -53,7 +54,7 @@ const YouTubePlayer = ({ songInfo }) => {
 
   const {
     lyricData: { full: fullLyricData, gapped: stops },
-    metadata: { videoId, language, alternateSpellings, startAt },
+    metadata: { title, artist, videoId, language, alternateSpellings, startAt },
   } = songInfo;
   const rounds = stops.length;
 
@@ -75,7 +76,20 @@ const YouTubePlayer = ({ songInfo }) => {
   );
 
   return (
-    <div style={{ display: "block" }}>
+    <div style={{ display: "block", maxWidth: 600, flex: 1 }}>
+      {gameState !== "running" && gameState !== "ended" ? (
+        <Instructions startGame={startGame} />
+      ) : null}
+      <div id="header">
+        <span
+          style={{
+            fontSize: "min(18pt, max(12pt, 4vw))",
+            marginLeft: "max(1vw, 8px)",
+          }}
+        >
+          {title} ({artist})
+        </span>
+      </div>
       <div style={{ maxWidth: 600 }}>
         <YouTube
           ref={playerRef}
@@ -124,11 +138,15 @@ const YouTubePlayer = ({ songInfo }) => {
           />
           <NavigationButtons
             hardRewind={
-              gameResults[currentRound]
+              gameResults[currentRound] || gameState !== "running"
                 ? null
                 : () => restartRound(currentRound)
             }
-            recap={gameResults[currentRound] ? null : recapCurrentStop}
+            recap={
+              gameResults[currentRound] || gameState !== "running"
+                ? null
+                : recapCurrentStop
+            }
             stopIndex={roundInfo.index}
             currIndex={lyric.index}
             gameResults={gameResults[currentRound]}
@@ -143,11 +161,11 @@ const YouTubePlayer = ({ songInfo }) => {
             revealAnswer={() => setRevealAnswer(!revealAnswer)}
             answerRevealed={revealAnswer}
           />
-          {gameState}
-          <br />
-          <button onClick={startGame}>startGame</button>
+          {/* {gameState} */}
+          {/* <br /> */}
+          {/* <button onClick={startGame}>startGame</button> */}
           {/* <button onClick={playVideo}>playVideo</button> */}
-          <button onClick={previousRound}>previousRound</button>
+          {/* <button onClick={previousRound}>previousRound</button>
           <button onClick={nextRound}>nextRound</button>
           <button onClick={nextRoundIfValidated}>nextRoundIfValidated</button>
           <button onClick={goToTimestampOfArrayEntry}>
@@ -166,7 +184,7 @@ const YouTubePlayer = ({ songInfo }) => {
           <br />
           {gameResults.map((x) => (
             <ResultsDisplay key={x.key} round={x.key} result={x.result} />
-          ))}
+          ))} */}
         </div>
       )}
     </div>
@@ -196,14 +214,16 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function startGame() {
-    setScore(0);
+    // setScore(0);
     setGameState("running");
     setGameResults([]);
     startRound(1);
   }
 
   function startRound(roundNumber, restart = false) {
-    setRevealedQuestion(restart);
+    setRevealedQuestion(
+      restart && wordCount(inputRef.current.value) >= wordCount(roundInfo.lyr)
+    );
     setTimeToWrite(false);
     setCurrentRound(roundNumber);
     setRevealAnswer(false);
@@ -272,10 +292,10 @@ const YouTubePlayer = ({ songInfo }) => {
     playVideo();
   }
 
-  function previousRound() {
-    const newRound = currentRound - 1;
-    if (0 < newRound) startRound(newRound);
-  }
+  // function previousRound() {
+  //   const newRound = currentRound - 1;
+  //   if (0 < newRound) startRound(newRound);
+  // }
 
   function nextRound() {
     const newRound = currentRound + 1;
@@ -283,17 +303,17 @@ const YouTubePlayer = ({ songInfo }) => {
     else endGame();
   }
 
-  function nextRoundIfValidated() {
-    if (gameResults[currentRound]) {
-      nextRound();
-    }
-  }
+  // function nextRoundIfValidated() {
+  //   if (gameResults[currentRound]) {
+  //     nextRound();
+  //   }
+  // }
 
-  async function seekRelativeToCurrentStop(offset) {
-    console.log("seekRelativeToCurrentStop");
-    setTimeToWrite(false);
-    seekTo(roundInfo.stopTime + offset);
-  }
+  // async function seekRelativeToCurrentStop(offset) {
+  //   console.log("seekRelativeToCurrentStop");
+  //   setTimeToWrite(false);
+  //   seekTo(roundInfo.stopTime + offset);
+  // }
 
   function validateAnswer() {
     setTimeToWrite(false);
@@ -321,6 +341,8 @@ const YouTubePlayer = ({ songInfo }) => {
   function recapCurrentStop() {
     let where = roundInfo.index - 1;
     if (where < 0) where = 0;
+    if (wordCount(inputRef.current.value) < wordCount(roundInfo.lyr))
+      setRevealedQuestion(false);
     goToTimestampOfArrayEntry(where);
   }
 };

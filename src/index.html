@@ -26,12 +26,31 @@
         width: min(100%, 600px);
         margin-left: auto;
         margin-right: auto;
-        background-color: white;
+      }
+
+      #modal {
+        background-color: rgba(0, 0, 0, 0.9);
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 0;
+        z-index: 10;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      #modal:empty {
+        display: none;
       }
     </style>
   </head>
   <body>
-    <div id="root">React was not rendered.</div>
+    <div id="modal"></div>
+    <div id="root" style="display: flex; padding-top: 15vh">
+      React was not rendered.
+    </div>
     <script src="./js/html5-youtube.js"></script>
     <script type="module" src="./App.js"></script>
   </body>

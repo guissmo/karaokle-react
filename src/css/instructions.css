@@ -1,0 +1,39 @@
+.dialog-box {
+  width: min(480px, 80vw);
+  background-color: rgb(152, 92, 248);
+  color: white;
+  font-weight: 300;
+  font-size: min(max(16pt, 4vw), 20pt);
+  border-radius: 10px;
+  padding: 10px;
+}
+
+.dialog-box h1 {
+  text-align: center;
+  font-size: 24px;
+  color: white;
+}
+
+.dialog-box h2 {
+  margin: 0;
+  padding: 3;
+  font-size: 20px;
+  color: yellow;
+}
+
+.dialog-box p {
+  margin: 0;
+  padding: 0;
+  font-size: 16px;
+  text-align: right;
+  color: rgb(255, 218, 252);
+}
+
+button.startGame {
+  flex: 1;
+  margin: 20px;
+  font-size: 32px;
+  height: 50px;
+  padding: 5px;
+  background-color: rgb(206, 60, 193);
+}
