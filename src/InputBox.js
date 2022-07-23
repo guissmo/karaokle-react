@@ -80,7 +80,6 @@ function InputBox(
   function handleKeyPress(e) {
     if (e.keyCode === 13) {
       e.target.blur();
-      //Write you validation logic here
     }
   }
 }

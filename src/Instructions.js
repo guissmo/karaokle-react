@@ -2,6 +2,7 @@ import React from "react";
 import Modal from "./Modal";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { fa1, fa2, fa3, fa4 } from "@fortawesome/free-solid-svg-icons";
+import "./css/instructions.css";
 
 const Instructions = ({ startGame }) => {
   return (

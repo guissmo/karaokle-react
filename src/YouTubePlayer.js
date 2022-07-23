@@ -14,7 +14,7 @@ import InputBox from "./InputBox";
 import NavigationButtons from "./NavigationButtons";
 import Instructions from "./Instructions";
 import "./css/youtube-embed.css";
-import "./css/instructions.css";
+import "./css/main-layout.css";
 
 const opts = {
   height: "240",
@@ -46,18 +46,19 @@ const YouTubePlayer = ({ songInfo }) => {
   });
   const [currentAnswer, setCurrentAnswer] = useState("");
   const [gameState, setGameState] = useState("not-loaded"); //not-loaded, ready-to-start, running, ended
-  // const [score, setScore] = useState(0);
   const [gameResults, setGameResults] = useState([]);
   const playerRef = useRef();
   const inputRef = useRef();
   const [revealAnswer, setRevealAnswer] = useState(false);
 
+  // LOADING THE DATA FROM SONG INFO
   const {
     lyricData: { full: fullLyricData, gapped: stops },
     metadata: { title, artist, videoId, language, alternateSpellings, startAt },
   } = songInfo;
   const rounds = stops.length;
 
+  // LYRICS / SUBTITLE UPDATE
   useInterval(
     async () => {
       let elapsed = await getCurrentTime();
@@ -75,18 +76,75 @@ const YouTubePlayer = ({ songInfo }) => {
     videoIsPlaying ? 10 : null
   );
 
+  const showInstructions = gameState !== "running" && gameState !== "ended";
+
+  const controls = (
+    <div>
+      <RoundMarkers
+        gameState={gameState}
+        gameResults={gameResults}
+        rounds={rounds}
+        stops={stops}
+        currentRound={currentRound}
+        wordsToFindOnRound={wordsToFindOnRound}
+      />
+      <LyricBox lyric={lyric.text} />
+      <InputBox
+        ref={inputRef}
+        currentAnswer={currentAnswer}
+        onBlur={getAnswerFromInput}
+        timeToWrite={!videoIsPlaying && timeToWrite}
+        placeholder={`Type the next ${wordsToFindOnRound(
+          currentRound
+        )} words here`}
+        gameResults={gameResults[currentRound]}
+        maxLength={wordsToFindOnRound(currentRound)}
+        wordArray={
+          gameResults[currentRound] && revealAnswer
+            ? gameResults[currentRound].result.map((x) =>
+                x.correct ? x.userAnswer : x.correctAnswer
+              )
+            : currentAnswer
+            ? presentableArray(currentAnswer, language)
+            : []
+        }
+        gameState={gameState}
+        revealAnswer={revealAnswer}
+      />
+      <NavigationButtons
+        hardRewind={
+          gameResults[currentRound] || gameState !== "running"
+            ? null
+            : () => restartRound(currentRound)
+        }
+        recap={
+          gameResults[currentRound] || gameState !== "running"
+            ? null
+            : recapCurrentStop
+        }
+        stopIndex={roundInfo.index}
+        currIndex={lyric.index}
+        gameResults={gameResults[currentRound]}
+        gameState={gameState}
+        validate={
+          revealedQuestion &&
+          (roundInfo.index === lyric.index || lyric.text === roundInfo.lyr)
+            ? validateAnswer
+            : null
+        }
+        nextRound={gameResults[currentRound] ? nextRound : null}
+        revealAnswer={() => setRevealAnswer(!revealAnswer)}
+        answerRevealed={revealAnswer}
+      />
+    </div>
+  );
+
+  // RETURN STATEMENT
   return (
-    <div style={{ display: "block", maxWidth: 600, flex: 1 }}>
-      {gameState !== "running" && gameState !== "ended" ? (
-        <Instructions startGame={startGame} />
-      ) : null}
+    <div className="mainDiv">
+      {showInstructions ? <Instructions startGame={startGame} /> : null}
       <div id="header">
-        <span
-          style={{
-            fontSize: "min(18pt, max(12pt, 4vw))",
-            marginLeft: "max(1vw, 8px)",
-          }}
-        >
+        <span className="title-artist">
           {title} ({artist})
         </span>
       </div>
@@ -101,92 +159,7 @@ const YouTubePlayer = ({ songInfo }) => {
           onReady={onReady}
         />
       </div>
-      {gameState === "not-loaded" ? (
-        "Waiting for video to load."
-      ) : (
-        <div>
-          <RoundMarkers
-            gameState={gameState}
-            gameResults={gameResults}
-            rounds={rounds}
-            stops={stops}
-            currentRound={currentRound}
-            wordsToFindOnRound={wordsToFindOnRound}
-          />
-          <LyricBox lyric={lyric.text} />
-          <InputBox
-            ref={inputRef}
-            currentAnswer={currentAnswer}
-            onBlur={getAnswerFromInput}
-            timeToWrite={!videoIsPlaying && timeToWrite}
-            placeholder={`Type the next ${wordsToFindOnRound(
-              currentRound
-            )} words here`}
-            gameResults={gameResults[currentRound]}
-            maxLength={wordsToFindOnRound(currentRound)}
-            wordArray={
-              gameResults[currentRound] && revealAnswer
-                ? gameResults[currentRound].result.map((x) =>
-                    x.correct ? x.userAnswer : x.correctAnswer
-                  )
-                : currentAnswer
-                ? presentableArray(currentAnswer, language)
-                : []
-            }
-            gameState={gameState}
-            revealAnswer={revealAnswer}
-          />
-          <NavigationButtons
-            hardRewind={
-              gameResults[currentRound] || gameState !== "running"
-                ? null
-                : () => restartRound(currentRound)
-            }
-            recap={
-              gameResults[currentRound] || gameState !== "running"
-                ? null
-                : recapCurrentStop
-            }
-            stopIndex={roundInfo.index}
-            currIndex={lyric.index}
-            gameResults={gameResults[currentRound]}
-            gameState={gameState}
-            validate={
-              revealedQuestion &&
-              (roundInfo.index === lyric.index || lyric.text === roundInfo.lyr)
-                ? validateAnswer
-                : null
-            }
-            nextRound={gameResults[currentRound] ? nextRound : null}
-            revealAnswer={() => setRevealAnswer(!revealAnswer)}
-            answerRevealed={revealAnswer}
-          />
-          {/* {gameState} */}
-          {/* <br /> */}
-          {/* <button onClick={startGame}>startGame</button> */}
-          {/* <button onClick={playVideo}>playVideo</button> */}
-          {/* <button onClick={previousRound}>previousRound</button>
-          <button onClick={nextRound}>nextRound</button>
-          <button onClick={nextRoundIfValidated}>nextRoundIfValidated</button>
-          <button onClick={goToTimestampOfArrayEntry}>
-            goToTimestampOfArrayEntry
-          </button>
-          <button onClick={() => seekRelativeToCurrentStop(-2)}>
-            seekRelativeToCurrentStop
-          </button>
-          <button onClick={() => recapCurrentStop(-2)}>recapCurrentStop</button>
-          {lyric.text} ({wordCount(lyric.text)})
-          <br />
-          <button onClick={validateAnswer}>Validate</button>
-          {currentAnswer}
-          <br />
-          <b>Score:</b> {score} : {roundInfo ? roundInfo.stopTime : null}
-          <br />
-          {gameResults.map((x) => (
-            <ResultsDisplay key={x.key} round={x.key} result={x.result} />
-          ))} */}
-        </div>
-      )}
+      {gameState === "not-loaded" ? "Waiting for video to load." : controls}
     </div>
   );
 
@@ -214,7 +187,6 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function startGame() {
-    // setScore(0);
     setGameState("running");
     setGameResults([]);
     startRound(1);
@@ -292,28 +264,11 @@ const YouTubePlayer = ({ songInfo }) => {
     playVideo();
   }
 
-  // function previousRound() {
-  //   const newRound = currentRound - 1;
-  //   if (0 < newRound) startRound(newRound);
-  // }
-
   function nextRound() {
     const newRound = currentRound + 1;
     if (newRound <= rounds) startRound(newRound);
     else endGame();
   }
-
-  // function nextRoundIfValidated() {
-  //   if (gameResults[currentRound]) {
-  //     nextRound();
-  //   }
-  // }
-
-  // async function seekRelativeToCurrentStop(offset) {
-  //   console.log("seekRelativeToCurrentStop");
-  //   setTimeToWrite(false);
-  //   seekTo(roundInfo.stopTime + offset);
-  // }
 
   function validateAnswer() {
     setTimeToWrite(false);

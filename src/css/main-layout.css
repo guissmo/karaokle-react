@@ -1,0 +1,10 @@
+.mainDiv {
+  display: block;
+  max-width: 600;
+  flex: 1;
+}
+
+.title-artist {
+  font-size: min(18pt, max(12pt, 4vw));
+  margin-left: max(1vw, 8px);
+}
