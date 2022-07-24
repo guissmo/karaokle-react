@@ -21,7 +21,7 @@ const opts = {
   width: "320",
   playerVars: {
     // https://developers.google.com/youtube/player_parameters
-    autoplay: 1,
+    autoplay: 0,
     controls: 0,
     modestbranding: 1,
     cc_load_policy: 0,
@@ -139,12 +139,18 @@ const YouTubePlayer = ({ songInfo }) => {
   // RETURN STATEMENT
   return (
     <div className="mainDiv">
-      {showInstructions ? (
+      {false ? (
         <Instructions
           startGame={gameState === "ready-to-start" ? startGame : null}
         />
       ) : null}
-      {true ? <ResultsModal gameResults={gameResults} /> : null}
+      {true ? (
+        <ResultsModal
+          gameResults={gameResults}
+          stops={stops}
+          fullLyricData={fullLyricData}
+        />
+      ) : null}
       <div id="header">
         <span className="title-artist">
           {title} ({artist})

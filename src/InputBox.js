@@ -3,15 +3,8 @@
 import React, { forwardRef } from "react";
 import WordsDisplay from "./WordsDisplay";
 import { presentableArray } from "./js/word-counter";
+import { keepUserAnswerIfCorrect, getColorArray } from "./js/word-display";
 import "./css/input-box.css";
-
-function keepUserAnswerIfCorrect(x) {
-  return x.correct ? x.userAnswer : x.correctAnswer;
-}
-
-function getColorArray(x) {
-  return x.correct ? "#08ff00" : "#ee0000";
-}
 
 function InputBox(
   {

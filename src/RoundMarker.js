@@ -5,9 +5,9 @@ function RoundMarker({ numberOfWords, result, current, done }) {
   let myStyle = {};
 
   if ((done || current) && result && result.correct) {
-    myStyle = { backgroundColor: "green" };
+    myStyle = { backgroundColor: "rgb(81, 203, 32)" };
   } else {
-    myStyle = { backgroundColor: "red" };
+    myStyle = { backgroundColor: "rgb(240, 101, 67)" };
   }
   if (!done && !current) {
     myStyle = { backgroundColor: "gray" };

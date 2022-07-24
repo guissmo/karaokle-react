@@ -17,6 +17,7 @@
 .dialog-box h2 {
   margin: 0;
   padding: 3;
+  margin-top: 10;
   font-size: 20px;
   color: yellow;
 }
@@ -25,8 +26,41 @@
   margin: 0;
   padding: 0;
   font-size: 16px;
-  text-align: right;
+  text-align: left;
   color: rgb(255, 218, 252);
+}
+
+#review-buttons {
+  display: flex;
+  gap: 10;
+  max-width: 600px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10px 10px 0 10px;
+}
+
+#review-zone {
+  border-radius: 5px;
+  text-align: center;
+  text-transform: uppercase;
+  padding: 10px;
+  line-height: 1.5em;
+  font-size: min(max(10pt, 1.5vw), 12pt);
+}
+
+button.review {
+  font-family: "Roboto Condensed", sans-serif;
+  border: 0;
+  border-radius: 10px 10px 0 0;
+  color: white;
+  height: 40px;
+  flex: 1;
+  cursor: pointer;
+}
+
+button.review-unselected {
+  opacity: 0.7;
+  height: 38px;
 }
 
 button.startGame {
@@ -40,4 +74,62 @@ button.startGame {
 
 button.loading {
   opacity: 0.5;
+}
+
+.noplp-box {
+  font-family: "Roboto Condensed", sans-serif;
+  text-transform: uppercase;
+  border: 0px gray solid;
+  border-radius: 10px;
+  text-align: center;
+  width: min(95%, 600px);
+  text-shadow: 1px 1px black;
+  box-shadow: 0 0 0 1px black, 0 0 0 2px #ccc;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-left: 4px;
+  padding-right: 4px;
+  margin-top: 4px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.lyric {
+  background: linear-gradient(
+    180deg,
+    rgba(171, 187, 219, 1) 0%,
+    rgba(71, 108, 183, 1) 20%,
+    rgba(25, 49, 132, 1) 50%,
+    rgba(20, 33, 94, 1) 80%,
+    rgba(0, 0, 0, 1) 100%
+  );
+  color: white;
+  opacity: 1;
+}
+
+.smaller-noplp-box {
+  font-size: min(max(12pt, 2vw), 16pt);
+}
+
+.tab {
+  background-color: rgb(48, 180, 192);
+}
+
+.correct-tab {
+  color: rgb(81, 203, 32);
+}
+
+.wrong-tab {
+  color: rgb(240, 101, 67);
+}
+
+.mag-button {
+  font-family: "Roboto Condensed", sans-serif;
+  border: 0;
+  border-radius: 10px;
+  color: white;
+  height: 40px;
+  background-color: rgb(152, 92, 248);
+  width: 20%;
+  cursor: pointer;
 }
