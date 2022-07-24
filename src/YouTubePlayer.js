@@ -30,20 +30,27 @@ const opts = {
 };
 
 const YouTubePlayer = ({ songInfo }) => {
+  // LYRIC BOX
   const [videoIsPlaying, setVideoIsPlaying] = useState(false);
   const [lyric, setLyric] = useState({
     index: -1,
     text: "",
   });
-  const [revealedQuestion, setRevealedQuestion] = useState(false);
-  const [timeToWrite, setTimeToWrite] = useState(false);
-  const [currentRound, setCurrentRound] = useState(null);
-  const [currentAnswer, setCurrentAnswer] = useState("");
+
+  // GAME STATE
   const [gameState, setGameState] = useState("not-loaded"); //not-loaded, ready-to-start, running, ended
   const [gameResults, setGameResults] = useState([]);
+
+  // ROUND INFORMATION
+  const [currentRound, setCurrentRound] = useState(null);
+  const [revealedQuestion, setRevealedQuestion] = useState(false);
+  const [timeToWrite, setTimeToWrite] = useState(false);
+  const [userAnswer, setUserAnswer] = useState("");
+  const [revealAnswer, setRevealAnswer] = useState(false);
+
+  // REFS
   const playerRef = useRef();
   const inputRef = useRef();
-  const [revealAnswer, setRevealAnswer] = useState(false);
 
   // LOADING THE DATA FROM SONG INFO
   const {
@@ -89,7 +96,7 @@ const YouTubePlayer = ({ songInfo }) => {
       <LyricBox lyric={lyric.text} />
       <InputBox
         ref={inputRef}
-        currentAnswer={currentAnswer}
+        userAnswer={userAnswer}
         onBlur={getAnswerFromInput}
         timeToWrite={!videoIsPlaying && timeToWrite}
         placeholder={`Type the next ${wordsToFindOnRound(
@@ -102,8 +109,8 @@ const YouTubePlayer = ({ songInfo }) => {
             ? gameResults[currentRound].result.map((x) =>
                 x.correct ? x.userAnswer : x.correctAnswer
               )
-            : currentAnswer
-            ? presentableArray(currentAnswer, language)
+            : userAnswer
+            ? presentableArray(userAnswer, language)
             : []
         }
         gameState={gameState}
@@ -172,7 +179,7 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function getAnswerFromInput() {
-    setCurrentAnswer(presentableString(inputRef.current.value, language));
+    setUserAnswer(presentableString(inputRef.current.value, language));
   }
 
   function onPlay() {
@@ -204,8 +211,10 @@ const YouTubePlayer = ({ songInfo }) => {
     setCurrentRound(roundNumber);
     setRevealAnswer(false);
     goToLastLineOfRound(roundNumber - 1);
-    if (!restart) setCurrentAnswer("");
-    if (!restart) inputRef.current.value = "";
+    if (!restart) {
+      setUserAnswer("");
+      inputRef.current.value = "";
+    }
     playVideo();
   }
 
@@ -264,7 +273,6 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function goToTimestampOfArrayEntry(num) {
-    if (num === undefined) num = prompt();
     if (num < 0) num = 0;
     if (num >= fullLyricData.length) num = fullLyricData - 1;
     seekTo(fullLyricData[num].time);
