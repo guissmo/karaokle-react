@@ -2,21 +2,33 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { forwardRef } from "react";
 import WordsDisplay from "./WordsDisplay";
+import { presentableArray } from "./js/word-counter";
 import "./css/input-box.css";
 
 function InputBox(
   {
     currentlyTypingHook: [isCurrentlyTyping, setIsCurrentlyTyping],
+    currentRound,
     onBlur,
+    userAnswer,
+    language,
     waitingForAnswer,
     gameResults,
     gameState,
-    wordArray,
     maxLength,
     revealAnswer,
   },
   ref
 ) {
+  const wordArray =
+    gameResults !== undefined && gameResults[currentRound] && revealAnswer
+      ? gameResults[currentRound].result.map((x) =>
+          x.correct ? x.userAnswer : x.correctAnswer
+        )
+      : userAnswer
+      ? presentableArray(userAnswer, language)
+      : [];
+
   const hiddenStyle = { width: 0, height: 0, overflow: "hidden" };
 
   let inputShouldBeVisible =

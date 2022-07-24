@@ -6,7 +6,6 @@ import {
   wordCount,
   compareAnswers,
   presentableString,
-  presentableArray,
 } from "./js/word-counter";
 import RoundMarkers from "./RoundMarkers";
 import LyricBox from "./LyricBox";
@@ -97,21 +96,14 @@ const YouTubePlayer = ({ songInfo }) => {
       <LyricBox lyric={lyric.text} />
       <InputBox
         ref={inputRef}
+        language={language}
         userAnswer={userAnswer}
+        currentRound={currentRound}
         currentlyTypingHook={[isCurrentlyTyping, setIsCurrentlyTyping]}
         onBlur={getAnswerFromInput}
         waitingForAnswer={!videoIsPlaying && waitingForAnswer}
         gameResults={gameResults[currentRound]}
         maxLength={wordsToFindOnRound(currentRound)}
-        wordArray={
-          gameResults[currentRound] && revealAnswer
-            ? gameResults[currentRound].result.map((x) =>
-                x.correct ? x.userAnswer : x.correctAnswer
-              )
-            : userAnswer
-            ? presentableArray(userAnswer, language)
-            : []
-        }
         gameState={gameState}
         revealAnswer={revealAnswer}
       />
