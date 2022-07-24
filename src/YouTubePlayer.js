@@ -43,7 +43,6 @@ const YouTubePlayer = ({ songInfo }) => {
 
   // ROUND INFORMATION
   const [currentRound, setCurrentRound] = useState(null);
-  const [revealedQuestion, setRevealedQuestion] = useState(false);
   const [timeToWrite, setTimeToWrite] = useState(false);
   const [userAnswer, setUserAnswer] = useState("");
   const [revealAnswer, setRevealAnswer] = useState(false);
@@ -132,7 +131,7 @@ const YouTubePlayer = ({ songInfo }) => {
         gameResults={gameResults[currentRound]}
         gameState={gameState}
         validate={
-          revealedQuestion &&
+          !videoIsPlaying &&
           (getRoundInfo().index === lyric.index ||
             lyric.text === getRoundInfo().lyr)
             ? validateAnswer
@@ -218,7 +217,7 @@ const YouTubePlayer = ({ songInfo }) => {
     playVideo();
   }
 
-  function restartRound(roundNumber) {
+  function restartRound(roundNumber = currentRound) {
     startRound(roundNumber, true);
   }
 
