@@ -3,7 +3,7 @@ import RoundMarker from "./RoundMarker";
 import "./css/round-markers.css";
 
 function RoundMarkers({
-  rounds,
+  numberOfRounds,
   currentRound,
   stops,
   wordsToFindOnRound,
@@ -12,7 +12,7 @@ function RoundMarkers({
 }) {
   return (
     <div className="round-markers">
-      {Array.from(Array(rounds).keys()).map((x) => (
+      {Array.from(Array(numberOfRounds).keys()).map((x) => (
         <RoundMarker
           key={x + 1}
           round={x + 1}

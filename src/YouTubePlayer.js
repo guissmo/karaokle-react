@@ -50,18 +50,18 @@ const YouTubePlayer = ({ songInfo }) => {
     lyricData: { full: fullLyricData, gapped: stops },
     metadata: { title, artist, videoId, language, alternateSpellings, startAt },
   } = songInfo;
-  const rounds = stops.length;
+  const numberOfRounds = stops.length;
 
   // LYRICS / SUBTITLE UPDATE
   useInterval(
     async () => {
       let elapsed = await getCurrentTime();
       if (gameState === "running") {
-        if (getRoundInfo.stopTime < elapsed) {
+        if (getRoundInfo().stopTime < elapsed) {
           inputRef.current.focus();
           setTimeToWrite(true);
           setRevealedQuestion(true);
-          forceTimestamp(getRoundInfo.stopTime);
+          forceTimestamp(getRoundInfo().stopTime);
         }
       }
       const { index, text } = getCurrentLyric(songInfo, elapsed);
@@ -81,7 +81,7 @@ const YouTubePlayer = ({ songInfo }) => {
       <RoundMarkers
         gameState={gameState}
         gameResults={gameResults}
-        rounds={rounds}
+        numberOfRounds={numberOfRounds}
         stops={stops}
         currentRound={currentRound}
         wordsToFindOnRound={wordsToFindOnRound}
@@ -120,14 +120,14 @@ const YouTubePlayer = ({ songInfo }) => {
             ? null
             : recapCurrentStop
         }
-        stopIndex={getRoundInfo.index}
+        stopIndex={getRoundInfo().index}
         currIndex={lyric.index}
         gameResults={gameResults[currentRound]}
         gameState={gameState}
         validate={
           revealedQuestion &&
-          (getRoundInfo.index === lyric.index ||
-            lyric.text === getRoundInfo.lyr)
+          (getRoundInfo().index === lyric.index ||
+            lyric.text === getRoundInfo().lyr)
             ? validateAnswer
             : null
         }
@@ -167,7 +167,7 @@ const YouTubePlayer = ({ songInfo }) => {
   );
 
   function wordsToFindOnRound(roundNumber) {
-    if (roundNumber <= 0 || roundNumber > rounds) return 0;
+    if (roundNumber <= 0 || roundNumber > numberOfRounds) return 0;
     return wordCount(stops[roundNumber - 1].answer);
   }
 
@@ -198,7 +198,7 @@ const YouTubePlayer = ({ songInfo }) => {
   function startRound(roundNumber, restart = false) {
     setRevealedQuestion(
       restart &&
-        wordCount(inputRef.current.value) >= wordCount(getRoundInfo.lyr)
+        wordCount(inputRef.current.value) >= wordCount(getRoundInfo().lyr)
     );
     setTimeToWrite(false);
     setCurrentRound(roundNumber);
@@ -254,8 +254,8 @@ const YouTubePlayer = ({ songInfo }) => {
         index = i;
         if (lyr) newLyric = lyr;
       }
-      if (gameState === "running" && getRoundInfo.time <= timestamp)
-        newLyric = getRoundInfo.lyr;
+      if (gameState === "running" && getRoundInfo().time <= timestamp)
+        newLyric = getRoundInfo().lyr;
     }
     return {
       index,
@@ -273,14 +273,14 @@ const YouTubePlayer = ({ songInfo }) => {
 
   function nextRound() {
     const newRound = currentRound + 1;
-    if (newRound <= rounds) startRound(newRound);
+    if (newRound <= numberOfRounds) startRound(newRound);
     else endGame();
   }
 
   function validateAnswer() {
     setTimeToWrite(false);
     const result = compareAnswers(
-      getRoundInfo.answer,
+      getRoundInfo().answer,
       inputRef.current.value,
       language,
       alternateSpellings
@@ -296,26 +296,27 @@ const YouTubePlayer = ({ songInfo }) => {
 
   function endGame() {
     setGameState("ended");
-    goToLastLineOfRound(rounds);
+    goToLastLineOfRound(numberOfRounds);
     playVideo();
   }
 
   function recapCurrentStop() {
-    let where = getRoundInfo.index - 1;
+    let where = getRoundInfo().index - 1;
     if (where < 0) where = 0;
-    if (wordCount(inputRef.current.value) < wordCount(getRoundInfo.lyr))
+    if (wordCount(inputRef.current.value) < wordCount(getRoundInfo().lyr))
       setRevealedQuestion(false);
     goToTimestampOfArrayEntry(where);
   }
 
-  function getRoundInfo(roundNumber) {
+  function getRoundInfo(roundNumber = currentRound) {
     let ret = {
       index: -1,
       time: null,
       stopTime: null,
       lyr: null,
     };
-    if (1 <= roundNumber && roundNumber < rounds) ret = stops[roundNumber - 1];
+    if (1 <= roundNumber && roundNumber < numberOfRounds)
+      ret = stops[roundNumber - 1];
     return ret;
   }
 };
