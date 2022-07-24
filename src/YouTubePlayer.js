@@ -40,6 +40,7 @@ const YouTubePlayer = ({ songInfo }) => {
   // GAME STATE
   const [gameState, setGameState] = useState("not-loaded"); //not-loaded, ready-to-start, running, ended
   const [gameResults, setGameResults] = useState([]);
+  const [showResultsModal, setShowResultsModal] = useState(true);
 
   // ROUND INFORMATION
   const [currentRound, setCurrentRound] = useState(null);
@@ -81,7 +82,6 @@ const YouTubePlayer = ({ songInfo }) => {
   }, gameState === "loading-video");
 
   const showInstructions = gameState !== "running" && gameState !== "ended";
-  const showResultsModal = gameState === "ended";
 
   const controls = (
     <div>
@@ -139,16 +139,18 @@ const YouTubePlayer = ({ songInfo }) => {
   // RETURN STATEMENT
   return (
     <div className="mainDiv">
-      {false ? (
+      {showInstructions ? (
         <Instructions
           startGame={gameState === "ready-to-start" ? startGame : null}
         />
       ) : null}
-      {true ? (
+      {gameState === "ended" && showResultsModal ? (
         <ResultsModal
           gameResults={gameResults}
           stops={stops}
           fullLyricData={fullLyricData}
+          metadata={{ title, artist }}
+          closeResultsModal={() => setShowResultsModal(false)}
         />
       ) : null}
       <div id="header">

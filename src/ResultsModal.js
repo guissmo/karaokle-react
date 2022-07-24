@@ -6,70 +6,104 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   fa1,
   fa2,
+  fa3,
   faCheck,
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import "./css/instructions.css";
 
-const ResultsModal = ({ gameResults, stops }) => {
+const emojiRed = String.fromCodePoint(0x1f7e5);
+const emojiGreen = String.fromCodePoint(0x1f7e9);
+
+function copyResultsToClipboard(setCopied, gameResults, { title, artist }) {
+  let ret = "";
+
+  ret += `\uD83C\uDFB6 Karaokle:\n`;
+  ret += `\uD83C\uDFBC ${title} - ${artist}`;
+  ret += gameResults
+    .map((gameResultArrayEntry) => {
+      if (!gameResultArrayEntry) return null;
+      const roundIcon = gameResultArrayEntry.correct ? emojiGreen : emojiRed;
+      const wordsToEmoji = gameResultArrayEntry.result
+        .map((x) => (x.correct ? emojiGreen : emojiRed))
+        .join("");
+      return `${roundIcon} ${gameResultArrayEntry.key}: ${wordsToEmoji}`;
+    })
+    .join("\n");
+  ret += `\n`;
+  ret += `Try it out at https://karaokle.guissmo.com\n`;
+  navigator.clipboard.writeText(ret);
+  setCopied(true);
+  setTimeout(() => {
+    setCopied(false);
+  }, 10000);
+}
+
+const ResultsModal = ({
+  gameResults,
+  stops,
+  closeResultsModal,
+  metadata: { title, artist },
+}) => {
   const [roundBeingViewed, setRoundBeingViewed] = useState(1);
   const [revealAnswer, setRevealAnswer] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  gameResults = [
-    undefined,
-    {
-      key: 1,
-      result: [
-        { correct: true, correctAnswer: "no", userAnswer: "no" },
-        { correct: true, correctAnswer: "sympathy", userAnswer: "sympathy" },
-      ],
-      correct: true,
-    },
-    {
-      key: 2,
-      result: [
-        { correct: false, correctAnswer: "my", userAnswer: "the" },
-        { correct: true, correctAnswer: "trigger", userAnswer: "trigger" },
-        { correct: true, correctAnswer: "now", userAnswer: "now" },
-        { correct: false, correctAnswer: "he's", userAnswer: "he" },
-        { correct: true, correctAnswer: "dead", userAnswer: "dead" },
-      ],
-      correct: false,
-    },
-    {
-      key: 3,
-      result: [
-        { correct: true, correctAnswer: "will", userAnswer: "will" },
-        { correct: true, correctAnswer: "you", userAnswer: "you" },
-        { correct: true, correctAnswer: "do", userAnswer: "do" },
-        { correct: true, correctAnswer: "the", userAnswer: "the" },
-        { correct: false, correctAnswer: "Fandango?", userAnswer: "mango" },
-      ],
-      correct: false,
-    },
-    {
-      key: 4,
-      result: [
-        { correct: true, correctAnswer: "from", userAnswer: "from" },
-        { correct: true, correctAnswer: "a", userAnswer: "a" },
-        { correct: true, correctAnswer: "poor", userAnswer: "poor" },
-        { correct: true, correctAnswer: "family", userAnswer: "fam" },
-      ],
-      correct: true,
-    },
-    {
-      key: 5,
-      result: [
-        { correct: true, correctAnswer: "me", userAnswer: "me" },
-        { correct: true, correctAnswer: "and", userAnswer: "and" },
-        { correct: true, correctAnswer: "leave", userAnswer: "leave" },
-        { correct: true, correctAnswer: "me", userAnswer: "me" },
-        { correct: true, correctAnswer: "to", userAnswer: "to" },
-        { correct: true, correctAnswer: "die?", userAnswer: "die" },
-      ],
-      correct: true,
-    },
-  ];
+  // gameResults = [
+  //   undefined,
+  //   {
+  //     key: 1,
+  //     result: [
+  //       { correct: true, correctAnswer: "no", userAnswer: "no" },
+  //       { correct: true, correctAnswer: "sympathy", userAnswer: "sympathy" },
+  //     ],
+  //     correct: true,
+  //   },
+  //   {
+  //     key: 2,
+  //     result: [
+  //       { correct: false, correctAnswer: "my", userAnswer: "the" },
+  //       { correct: true, correctAnswer: "trigger", userAnswer: "trigger" },
+  //       { correct: true, correctAnswer: "now", userAnswer: "now" },
+  //       { correct: false, correctAnswer: "he's", userAnswer: "he" },
+  //       { correct: true, correctAnswer: "dead", userAnswer: "dead" },
+  //     ],
+  //     correct: false,
+  //   },
+  //   {
+  //     key: 3,
+  //     result: [
+  //       { correct: true, correctAnswer: "will", userAnswer: "will" },
+  //       { correct: true, correctAnswer: "you", userAnswer: "you" },
+  //       { correct: true, correctAnswer: "do", userAnswer: "do" },
+  //       { correct: true, correctAnswer: "the", userAnswer: "the" },
+  //       { correct: false, correctAnswer: "Fandango?", userAnswer: "mango" },
+  //     ],
+  //     correct: false,
+  //   },
+  //   {
+  //     key: 4,
+  //     result: [
+  //       { correct: true, correctAnswer: "from", userAnswer: "from" },
+  //       { correct: true, correctAnswer: "a", userAnswer: "a" },
+  //       { correct: true, correctAnswer: "poor", userAnswer: "poor" },
+  //       { correct: true, correctAnswer: "family", userAnswer: "fam" },
+  //     ],
+  //     correct: true,
+  //   },
+  //   {
+  //     key: 5,
+  //     result: [
+  //       { correct: true, correctAnswer: "me", userAnswer: "me" },
+  //       { correct: true, correctAnswer: "and", userAnswer: "and" },
+  //       { correct: true, correctAnswer: "leave", userAnswer: "leave" },
+  //       { correct: true, correctAnswer: "me", userAnswer: "me" },
+  //       { correct: true, correctAnswer: "to", userAnswer: "to" },
+  //       { correct: true, correctAnswer: "die?", userAnswer: "die" },
+  //     ],
+  //     correct: true,
+  //   },
+  // ];
 
   const userWordArray = gameResults[roundBeingViewed].result.map(
     (x) => x.userAnswer
@@ -88,7 +122,25 @@ const ResultsModal = ({ gameResults, stops }) => {
         </h2>
         <p>
           Share your results and see if your friends can beat or match your
-          score!
+          score! Click the button:
+          <div style={{ textAlign: "center" }}>
+            <button
+              onClick={() =>
+                copyResultsToClipboard(setCopied, gameResults, {
+                  title,
+                  artist,
+                })
+              }
+              className="copy-button"
+            >
+              {copied ? "COPIED!" : "COPY"}
+            </button>{" "}
+          </div>
+        </p>
+        <p style={{ textAlign: "center" }}>
+          <font color="white">
+            {copied ? "...then PASTE your results on social media." : "\xa0"}
+          </font>
         </p>
         <h2>
           <FontAwesomeIcon icon={fa2} /> REVIEW
@@ -155,6 +207,15 @@ const ResultsModal = ({ gameResults, stops }) => {
               />
             </button>
           </div>
+        </div>
+        <h2>
+          <FontAwesomeIcon icon={fa3} /> COME BACK
+        </h2>
+        <p>Come back tomorrow for a new song!</p>
+        <div style={{ textAlign: "center", padding: 15 }}>
+          <button onClick={closeResultsModal} className="copy-button">
+            RETURN TO GAME
+          </button>
         </div>
         {/* {gameResults.map((gameResultArrayEntry) => {
           const correctWordArray = gameResultArrayEntry.result.map(

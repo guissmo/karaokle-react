@@ -133,3 +133,14 @@ button.loading {
   width: 20%;
   cursor: pointer;
 }
+
+.copy-button {
+  font-family: "Roboto Condensed", sans-serif;
+  border: 0;
+  border-radius: 10px;
+  color: white;
+  height: 40px;
+  background-color: rgb(206, 60, 193);
+  width: 40%;
+  cursor: pointer;
+}
