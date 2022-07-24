@@ -38,12 +38,6 @@ const YouTubePlayer = ({ songInfo }) => {
   const [revealedQuestion, setRevealedQuestion] = useState(false);
   const [timeToWrite, setTimeToWrite] = useState(false);
   const [currentRound, setCurrentRound] = useState(null);
-  const [roundInfo, setRoundInfo] = useState({
-    index: -1,
-    time: null,
-    stopTime: null,
-    lyr: null,
-  });
   const [currentAnswer, setCurrentAnswer] = useState("");
   const [gameState, setGameState] = useState("not-loaded"); //not-loaded, ready-to-start, running, ended
   const [gameResults, setGameResults] = useState([]);
@@ -63,11 +57,11 @@ const YouTubePlayer = ({ songInfo }) => {
     async () => {
       let elapsed = await getCurrentTime();
       if (gameState === "running") {
-        if (roundInfo.stopTime < elapsed) {
+        if (getRoundInfo.stopTime < elapsed) {
           inputRef.current.focus();
           setTimeToWrite(true);
           setRevealedQuestion(true);
-          forceTimestamp(roundInfo.stopTime);
+          forceTimestamp(getRoundInfo.stopTime);
         }
       }
       const { index, text } = getCurrentLyric(songInfo, elapsed);
@@ -126,13 +120,14 @@ const YouTubePlayer = ({ songInfo }) => {
             ? null
             : recapCurrentStop
         }
-        stopIndex={roundInfo.index}
+        stopIndex={getRoundInfo.index}
         currIndex={lyric.index}
         gameResults={gameResults[currentRound]}
         gameState={gameState}
         validate={
           revealedQuestion &&
-          (roundInfo.index === lyric.index || lyric.text === roundInfo.lyr)
+          (getRoundInfo.index === lyric.index ||
+            lyric.text === getRoundInfo.lyr)
             ? validateAnswer
             : null
         }
@@ -202,12 +197,12 @@ const YouTubePlayer = ({ songInfo }) => {
 
   function startRound(roundNumber, restart = false) {
     setRevealedQuestion(
-      restart && wordCount(inputRef.current.value) >= wordCount(roundInfo.lyr)
+      restart &&
+        wordCount(inputRef.current.value) >= wordCount(getRoundInfo.lyr)
     );
     setTimeToWrite(false);
     setCurrentRound(roundNumber);
     setRevealAnswer(false);
-    setRoundInfo(stops[roundNumber - 1]);
     goToLastLineOfRound(roundNumber - 1);
     if (!restart) setCurrentAnswer("");
     if (!restart) inputRef.current.value = "";
@@ -259,8 +254,8 @@ const YouTubePlayer = ({ songInfo }) => {
         index = i;
         if (lyr) newLyric = lyr;
       }
-      if (gameState === "running" && roundInfo.time <= timestamp)
-        newLyric = roundInfo.lyr;
+      if (gameState === "running" && getRoundInfo.time <= timestamp)
+        newLyric = getRoundInfo.lyr;
     }
     return {
       index,
@@ -285,7 +280,7 @@ const YouTubePlayer = ({ songInfo }) => {
   function validateAnswer() {
     setTimeToWrite(false);
     const result = compareAnswers(
-      roundInfo.answer,
+      getRoundInfo.answer,
       inputRef.current.value,
       language,
       alternateSpellings
@@ -306,11 +301,22 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function recapCurrentStop() {
-    let where = roundInfo.index - 1;
+    let where = getRoundInfo.index - 1;
     if (where < 0) where = 0;
-    if (wordCount(inputRef.current.value) < wordCount(roundInfo.lyr))
+    if (wordCount(inputRef.current.value) < wordCount(getRoundInfo.lyr))
       setRevealedQuestion(false);
     goToTimestampOfArrayEntry(where);
+  }
+
+  function getRoundInfo(roundNumber) {
+    let ret = {
+      index: -1,
+      time: null,
+      stopTime: null,
+      lyr: null,
+    };
+    if (1 <= roundNumber && roundNumber < rounds) ret = stops[roundNumber - 1];
+    return ret;
   }
 };
 
