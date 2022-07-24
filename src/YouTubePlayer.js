@@ -63,6 +63,7 @@ const YouTubePlayer = ({ songInfo }) => {
   // LYRICS / SUBTITLE UPDATE
   useInterval(
     async () => {
+      if (!document.hasFocus()) pauseVideo();
       let elapsed = await getCurrentTime();
       if (gameState === "running") {
         if (getRoundInfo().stopTime < elapsed) {
@@ -174,10 +175,10 @@ const YouTubePlayer = ({ songInfo }) => {
         />
       </div>
       {gameState === "not-loaded" ? "Waiting for video to load." : controls}
-      {/* <div>
+      <div>
         <button onClick={nextRound}>nextRound</button>
         <button onClick={endGame}>endGame</button>
-      </div> */}
+      </div>
     </div>
   );
 
