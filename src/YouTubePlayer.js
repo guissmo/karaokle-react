@@ -100,7 +100,7 @@ const YouTubePlayer = ({ songInfo }) => {
         userAnswer={userAnswer}
         currentRound={currentRound}
         currentlyTypingHook={[isCurrentlyTyping, setIsCurrentlyTyping]}
-        onBlur={getAnswerFromInput}
+        updateAnswerDisplay={updateAnswerDisplay}
         waitingForAnswer={!videoIsPlaying && waitingForAnswer}
         gameResults={gameResults[currentRound] ? gameResults : null}
         maxLength={wordsToFindOnRound(currentRound)}
@@ -174,7 +174,7 @@ const YouTubePlayer = ({ songInfo }) => {
     return wordCount(stops[roundNumber - 1].answer);
   }
 
-  function getAnswerFromInput() {
+  function updateAnswerDisplay() {
     setUserAnswer(presentableString(inputRef.current.value, language));
   }
 

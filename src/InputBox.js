@@ -5,11 +5,19 @@ import WordsDisplay from "./WordsDisplay";
 import { presentableArray } from "./js/word-counter";
 import "./css/input-box.css";
 
+function keepUserAnswerIfCorrect(x) {
+  return x.correct ? x.userAnswer : x.correctAnswer;
+}
+
+function getColorArray(x) {
+  return x.correct ? "#08ff00" : "#ee0000";
+}
+
 function InputBox(
   {
     currentlyTypingHook: [isCurrentlyTyping, setIsCurrentlyTyping],
     currentRound,
-    onBlur,
+    updateAnswerDisplay,
     userAnswer,
     language,
     waitingForAnswer,
@@ -20,69 +28,57 @@ function InputBox(
   },
   ref
 ) {
+  const roundIsDone = gameResults && gameResults[currentRound];
+
   let wordArray = [];
-  if (gameResults && gameResults[currentRound] && revealAnswer) {
-    wordArray = gameResults[currentRound].result.map((x) =>
-      x.correct ? x.userAnswer : x.correctAnswer
-    );
+  let colorArray = [];
+  if (roundIsDone && revealAnswer) {
+    wordArray = gameResults[currentRound].result.map(keepUserAnswerIfCorrect);
+    colorArray = gameResults[currentRound].result.map(() => "#08ff00");
   } else {
     if (userAnswer) wordArray = presentableArray(userAnswer, language);
+    if (roundIsDone)
+      colorArray = gameResults[currentRound].result.map(getColorArray);
   }
-
-  const hiddenStyle = { width: 0, height: 0, overflow: "hidden" };
 
   let inputShouldBeVisible =
     isCurrentlyTyping && waitingForAnswer && !gameResults;
 
+  let fakeInputDivExtraClasses = ``;
+  if (waitingForAnswer) fakeInputDivExtraClasses += "editable-text ";
+  if (inputShouldBeVisible)
+    fakeInputDivExtraClasses += "fake-input-div-hidden ";
+  if (!waitingForAnswer && !gameResults)
+    fakeInputDivExtraClasses += "fake-input-div-transparent ";
+
   return (
     <div>
-      <div style={inputShouldBeVisible ? { textAlign: "center" } : hiddenStyle}>
+      <div
+        className={
+          inputShouldBeVisible ? "input-container" : "input-container-hidden"
+        }
+      >
         <input
           ref={ref}
           className={`noplp-input-box input-lyric`}
           placeholder={`Type the next ${maxLength} words here.`}
           onFocus={() => setIsCurrentlyTyping(true)}
           onBlur={() => {
-            onBlur();
+            updateAnswerDisplay();
             setIsCurrentlyTyping(false);
           }}
           onKeyPress={(e) => handleKeyPress(e)}
         />
       </div>
       <div
-        style={
-          inputShouldBeVisible
-            ? { display: "none" }
-            : waitingForAnswer || gameResults
-            ? {}
-            : { opacity: 0.3 }
-        }
-        className={`noplp-input-box input-lyric ${
-          waitingForAnswer ? "editable-text" : null
-        }`}
-        onClick={() => {
-          if (waitingForAnswer) {
-            ref.current.focus();
-          }
-        }}
+        className={`noplp-input-box input-lyric ${fakeInputDivExtraClasses}`}
+        onClick={waitingForAnswer ? () => ref.current.focus() : null}
       >
         {gameState === "running" ? (
           <WordsDisplay
             wordArray={wordArray}
             maxLength={maxLength}
-            colors={
-              gameResults && gameResults[currentRound]
-                ? revealAnswer
-                  ? gameResults[currentRound].result.map(() => "#08ff00")
-                  : gameResults[currentRound].result.map((x) => {
-                      if (x.correct) {
-                        return "#08ff00";
-                      } else {
-                        return "#ee0000";
-                      }
-                    })
-                : []
-            }
+            colorArray={colorArray}
           />
         ) : (
           "\xa0"

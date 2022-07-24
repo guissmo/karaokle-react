@@ -29,3 +29,21 @@
   color: #ffda00;
   opacity: 1;
 }
+
+.input-container-hidden {
+  width: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+.input-container {
+  text-align: center;
+}
+
+.fake-input-div-hidden {
+  display: none;
+}
+
+.fake-input-div-transparent {
+  opacity: 0.3;
+}
