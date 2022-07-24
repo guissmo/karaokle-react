@@ -13,6 +13,7 @@ import LyricBox from "./LyricBox";
 import InputBox from "./InputBox";
 import NavigationButtons from "./NavigationButtons";
 import Instructions from "./Instructions";
+import ResultsModal from "./ResultsModal";
 import "./css/youtube-embed.css";
 import "./css/main-layout.css";
 
@@ -43,7 +44,8 @@ const YouTubePlayer = ({ songInfo }) => {
 
   // ROUND INFORMATION
   const [currentRound, setCurrentRound] = useState(null);
-  const [timeToWrite, setTimeToWrite] = useState(false);
+  const [waitingForAnswer, setWaitingForAnswer] = useState(false);
+  const [isCurrentlyTyping, setIsCurrentlyTyping] = useState(false);
   const [userAnswer, setUserAnswer] = useState("");
   const [revealAnswer, setRevealAnswer] = useState(false);
 
@@ -65,8 +67,7 @@ const YouTubePlayer = ({ songInfo }) => {
       if (gameState === "running") {
         if (getRoundInfo().stopTime < elapsed) {
           inputRef.current.focus();
-          setTimeToWrite(true);
-          setRevealedQuestion(true);
+          setWaitingForAnswer(true);
           forceTimestamp(getRoundInfo().stopTime);
         }
       }
@@ -81,6 +82,7 @@ const YouTubePlayer = ({ songInfo }) => {
   }, gameState === "loading-video");
 
   const showInstructions = gameState !== "running" && gameState !== "ended";
+  const showResultsModal = gameState === "ended";
 
   const controls = (
     <div>
@@ -96,11 +98,9 @@ const YouTubePlayer = ({ songInfo }) => {
       <InputBox
         ref={inputRef}
         userAnswer={userAnswer}
+        currentlyTypingHook={[isCurrentlyTyping, setIsCurrentlyTyping]}
         onBlur={getAnswerFromInput}
-        timeToWrite={!videoIsPlaying && timeToWrite}
-        placeholder={`Type the next ${wordsToFindOnRound(
-          currentRound
-        )} words here`}
+        waitingForAnswer={!videoIsPlaying && waitingForAnswer}
         gameResults={gameResults[currentRound]}
         maxLength={wordsToFindOnRound(currentRound)}
         wordArray={
@@ -152,6 +152,7 @@ const YouTubePlayer = ({ songInfo }) => {
           startGame={gameState === "ready-to-start" ? startGame : null}
         />
       ) : null}
+      {true ? <ResultsModal gameResults={gameResults} /> : null}
       <div id="header">
         <span className="title-artist">
           {title} ({artist})
@@ -169,6 +170,10 @@ const YouTubePlayer = ({ songInfo }) => {
         />
       </div>
       {gameState === "not-loaded" ? "Waiting for video to load." : controls}
+      <div>
+        <button onClick={nextRound}>nextRound</button>
+        <button onClick={endGame}>endGame</button>
+      </div>
     </div>
   );
 
@@ -202,11 +207,7 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function startRound(roundNumber, restart = false) {
-    setRevealedQuestion(
-      restart &&
-        wordCount(inputRef.current.value) >= wordCount(getRoundInfo().lyr)
-    );
-    setTimeToWrite(false);
+    setWaitingForAnswer(false);
     setCurrentRound(roundNumber);
     setRevealAnswer(false);
     goToLastLineOfRound(roundNumber - 1);
@@ -285,7 +286,7 @@ const YouTubePlayer = ({ songInfo }) => {
   }
 
   function validateAnswer() {
-    setTimeToWrite(false);
+    setWaitingForAnswer(false);
     const result = compareAnswers(
       getRoundInfo().answer,
       inputRef.current.value,
@@ -310,8 +311,6 @@ const YouTubePlayer = ({ songInfo }) => {
   function recapCurrentStop() {
     let where = getRoundInfo().index - 1;
     if (where < 0) where = 0;
-    if (wordCount(inputRef.current.value) < wordCount(getRoundInfo().lyr))
-      setRevealedQuestion(false);
     goToTimestampOfArrayEntry(where);
   }
 
@@ -322,7 +321,7 @@ const YouTubePlayer = ({ songInfo }) => {
       stopTime: null,
       lyr: null,
     };
-    if (1 <= roundNumber && roundNumber < numberOfRounds)
+    if (1 <= roundNumber && roundNumber <= numberOfRounds)
       ret = stops[roundNumber - 1];
     return ret;
   }

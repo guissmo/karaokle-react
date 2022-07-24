@@ -16,6 +16,7 @@ button {
   height: 30px;
   background-color: rgb(152, 92, 248);
   flex: 1;
+  cursor: pointer;
 }
 
 button.primary {
@@ -36,4 +37,5 @@ button.unrevealed {
 
 button:disabled {
   opacity: 0.2;
+  cursor: unset;
 }

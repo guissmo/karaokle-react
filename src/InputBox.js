@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { forwardRef, useState } from "react";
+import React, { forwardRef } from "react";
 import WordsDisplay from "./WordsDisplay";
 import "./css/input-box.css";
 
 function InputBox(
   {
-    placeholder,
+    currentlyTypingHook: [isCurrentlyTyping, setIsCurrentlyTyping],
     onBlur,
-    timeToWrite,
+    waitingForAnswer,
     gameResults,
     gameState,
     wordArray,
@@ -18,9 +18,9 @@ function InputBox(
   ref
 ) {
   const hiddenStyle = { width: 0, height: 0, overflow: "hidden" };
-  const [inputIsFocused, setInputIsFocused] = useState(false);
 
-  let inputShouldBeVisible = inputIsFocused && timeToWrite && !gameResults;
+  let inputShouldBeVisible =
+    isCurrentlyTyping && waitingForAnswer && !gameResults;
 
   return (
     <div>
@@ -28,11 +28,11 @@ function InputBox(
         <input
           ref={ref}
           className={`noplp-input-box input-lyric`}
-          placeholder={placeholder}
-          onFocus={() => setInputIsFocused(true)}
+          placeholder={`Type the next ${maxLength} words here.`}
+          onFocus={() => setIsCurrentlyTyping(true)}
           onBlur={() => {
-            setInputIsFocused(false);
             onBlur();
+            setIsCurrentlyTyping(false);
           }}
           onKeyPress={(e) => handleKeyPress(e)}
         />
@@ -41,13 +41,15 @@ function InputBox(
         style={
           inputShouldBeVisible
             ? { display: "none" }
-            : timeToWrite || gameResults
+            : waitingForAnswer || gameResults
             ? {}
             : { opacity: 0.3 }
         }
-        className={`noplp-input-box input-lyric`}
+        className={`noplp-input-box input-lyric ${
+          waitingForAnswer ? "editable-text" : null
+        }`}
         onClick={() => {
-          if (timeToWrite) {
+          if (waitingForAnswer) {
             ref.current.focus();
           }
         }}

@@ -29,3 +29,7 @@
   color: white;
   opacity: 1;
 }
+
+.editable-text {
+  cursor: text;
+}

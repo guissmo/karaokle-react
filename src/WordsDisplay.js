@@ -1,7 +1,7 @@
 import React from "react";
 import "./css/input-box.css";
 
-const BLANK = "\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0";
+export const BLANK = "\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0\xa0";
 
 function WordsDisplay({ wordArray, maxLength, colors }) {
   if (maxLength <= 0) return `${wordArray} ${maxLength} \xa0`;
