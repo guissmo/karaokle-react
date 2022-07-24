@@ -54,7 +54,7 @@ function InputBox(
         <input
           ref={ref}
           className={`noplp-input-box input-lyric`}
-          placeholder={`Type the next ${maxLength} words here.`}
+          placeholder={`Type the next ${maxLength} words here`}
           onFocus={() => setIsCurrentlyTyping(true)}
           onBlur={() => {
             updateAnswerDisplay();

@@ -108,6 +108,10 @@ const YouTubePlayer = ({ songInfo }) => {
         revealAnswer={revealAnswer}
       />
       <NavigationButtons
+        goToLastLineOfRound={goToLastLineOfRound}
+        playVideo={playVideo}
+        pauseVideo={pauseVideo}
+        toggleShowResultsModal={() => setShowResultsModal(!showResultsModal)}
         hardRewind={
           gameResults[currentRound] || gameState !== "running"
             ? null
@@ -170,10 +174,10 @@ const YouTubePlayer = ({ songInfo }) => {
         />
       </div>
       {gameState === "not-loaded" ? "Waiting for video to load." : controls}
-      <div>
+      {/* <div>
         <button onClick={nextRound}>nextRound</button>
         <button onClick={endGame}>endGame</button>
-      </div>
+      </div> */}
     </div>
   );
 

@@ -2,7 +2,7 @@ import React from "react";
 import { createRoot } from "react-dom/client";
 import { useState, StrictMode } from "react";
 import { loadLyricData } from "./js/lyric-loader";
-import songData from "./lyrics/isang-linggong-pagibig.lrc";
+import songData from "./lyrics/migraine.lrc";
 import YouTubePlayer from "./YouTubePlayer";
 import useInterval from "use-interval";
 
