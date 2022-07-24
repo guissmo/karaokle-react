@@ -20,14 +20,14 @@ function InputBox(
   },
   ref
 ) {
-  const wordArray =
-    gameResults !== undefined && gameResults[currentRound] && revealAnswer
-      ? gameResults[currentRound].result.map((x) =>
-          x.correct ? x.userAnswer : x.correctAnswer
-        )
-      : userAnswer
-      ? presentableArray(userAnswer, language)
-      : [];
+  let wordArray = [];
+  if (gameResults && gameResults[currentRound] && revealAnswer) {
+    wordArray = gameResults[currentRound].result.map((x) =>
+      x.correct ? x.userAnswer : x.correctAnswer
+    );
+  } else {
+    if (userAnswer) wordArray = presentableArray(userAnswer, language);
+  }
 
   const hiddenStyle = { width: 0, height: 0, overflow: "hidden" };
 
@@ -71,10 +71,10 @@ function InputBox(
             wordArray={wordArray}
             maxLength={maxLength}
             colors={
-              gameResults
+              gameResults && gameResults[currentRound]
                 ? revealAnswer
-                  ? gameResults.result.map(() => "#08ff00")
-                  : gameResults.result.map((x) => {
+                  ? gameResults[currentRound].result.map(() => "#08ff00")
+                  : gameResults[currentRound].result.map((x) => {
                       if (x.correct) {
                         return "#08ff00";
                       } else {

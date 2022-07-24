@@ -102,7 +102,7 @@ const YouTubePlayer = ({ songInfo }) => {
         currentlyTypingHook={[isCurrentlyTyping, setIsCurrentlyTyping]}
         onBlur={getAnswerFromInput}
         waitingForAnswer={!videoIsPlaying && waitingForAnswer}
-        gameResults={gameResults[currentRound]}
+        gameResults={gameResults[currentRound] ? gameResults : null}
         maxLength={wordsToFindOnRound(currentRound)}
         gameState={gameState}
         revealAnswer={revealAnswer}
