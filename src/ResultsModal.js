@@ -15,7 +15,12 @@ import "./css/instructions.css";
 const emojiRed = String.fromCodePoint(0x1f7e5);
 const emojiGreen = String.fromCodePoint(0x1f7e9);
 
-function copyResultsToClipboard(setCopied, gameResults, { title, artist }) {
+function copyResultsToClipboard(
+  setCopied,
+  gameResults,
+  { title, artist },
+  language
+) {
   let ret = "";
 
   ret += `\uD83C\uDFB6 Karaokle:\n`;
@@ -31,7 +36,7 @@ function copyResultsToClipboard(setCopied, gameResults, { title, artist }) {
     })
     .join("\n");
   ret += `\n`;
-  ret += `Try it out at https://karaokle.guissmo.com\n`;
+  ret += `Try it out at https://karaokle.guissmo.com/${language.toLowerCase()}\n`;
   navigator.clipboard.writeText(ret);
   setCopied(true);
   setTimeout(() => {
@@ -42,6 +47,7 @@ function copyResultsToClipboard(setCopied, gameResults, { title, artist }) {
 const ResultsModal = ({
   gameResults,
   stops,
+  language,
   closeResultsModal,
   metadata: { title, artist },
 }) => {
@@ -126,10 +132,15 @@ const ResultsModal = ({
           <div style={{ textAlign: "center" }}>
             <button
               onClick={() =>
-                copyResultsToClipboard(setCopied, gameResults, {
-                  title,
-                  artist,
-                })
+                copyResultsToClipboard(
+                  setCopied,
+                  gameResults,
+                  {
+                    title,
+                    artist,
+                  },
+                  language
+                )
               }
               className="copy-button"
             >

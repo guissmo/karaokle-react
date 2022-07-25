@@ -63,7 +63,7 @@ const YouTubePlayer = ({ songInfo }) => {
   // LYRICS / SUBTITLE UPDATE
   useInterval(
     async () => {
-      if (!document.hasFocus()) pauseVideo();
+      // if (!document.hasFocus()) pauseVideo();
       let elapsed = await getCurrentTime();
       if (gameState === "running") {
         if (getRoundInfo().stopTime < elapsed) {
@@ -156,6 +156,7 @@ const YouTubePlayer = ({ songInfo }) => {
           fullLyricData={fullLyricData}
           metadata={{ title, artist }}
           closeResultsModal={() => setShowResultsModal(false)}
+          language={language}
         />
       ) : null}
       <div id="header">
