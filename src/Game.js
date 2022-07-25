@@ -23,7 +23,7 @@ const Game = ({ language }) => {
         );
         setSongInfo(getInfoFromFile(songData));
       },
-    [language]
+    [language, id]
   );
 
   if (songInfo === null) return ``;
