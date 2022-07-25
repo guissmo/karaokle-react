@@ -176,10 +176,10 @@ const YouTubePlayer = ({ songInfo }) => {
         />
       </div>
       {gameState === "not-loaded" ? "Waiting for video to load." : controls}
-      <div>
+      {/* <div>
         <button onClick={nextRound}>nextRound</button>
         <button onClick={endGame}>endGame</button>
-      </div>
+      </div> */}
     </div>
   );
 
