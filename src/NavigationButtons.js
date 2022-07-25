@@ -130,7 +130,7 @@ const NavigationButtons = ({
     <div id="nav-buttons-container">
       <div id="nav-buttons">
         {leftNavigation}
-        <span style={{ display: "flex", flex: 3, gap: 10 }}>
+        <span style={{ display: "flex", flex: 3, gap: "10px" }}>
           {rightNavigation.map((x) => x)}
         </span>
       </div>

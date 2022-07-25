@@ -16,8 +16,8 @@
 
 .dialog-box h2 {
   margin: 0;
-  padding: 3;
-  margin-top: 10;
+  padding: 3px;
+  margin-top: 10px;
   font-size: 20px;
   color: yellow;
 }
@@ -32,7 +32,7 @@
 
 #review-buttons {
   display: flex;
-  gap: 10;
+  gap: 10px;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
