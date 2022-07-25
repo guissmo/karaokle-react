@@ -1,6 +1,7 @@
 .mainDiv {
   display: block;
-  max-width: 600;
+  max-width: 600px;
+  height: 600px;
   flex: 1;
 }
 
