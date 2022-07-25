@@ -75,7 +75,7 @@ function getMetadataAndRawLinesFromFile(text) {
   return { metadata, lyricLines };
 }
 
-function getInfoFromFile(text) {
+export function getInfoFromFile(text) {
   const { metadata, lyricLines } = getMetadataAndRawLinesFromFile(text);
 
   const noTimestamps = lyricLines
