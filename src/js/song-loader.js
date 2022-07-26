@@ -10,7 +10,8 @@ async function getSongListOfLanguage(lang) {
 }
 
 export async function whereIsTodaysSong(lang) {
-  if (!SUPPORTED_LANGUAGES.includes(lang)) return null;
+  if (!SUPPORTED_LANGUAGES.includes(lang))
+    throw `ERROR: You gave me ${lang} for language.`;
   const dailyCounter = Math.floor(Date.now() / 86400000) - 19198;
   return whereIsSongWithIndex(lang, dailyCounter);
 }

@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faBackwardFast,
@@ -138,4 +138,4 @@ const NavigationButtons = ({
   );
 };
 
-export default forwardRef(NavigationButtons);
+export default NavigationButtons;

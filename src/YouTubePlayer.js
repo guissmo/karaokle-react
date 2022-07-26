@@ -26,6 +26,7 @@ const opts = {
     modestbranding: 1,
     cc_load_policy: 0,
     disablekb: 1,
+    origin: "https://localhost:3000",
   },
 };
 

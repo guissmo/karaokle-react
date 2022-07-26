@@ -7,10 +7,11 @@ const App = () => {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/test" element={"yo!!!"} />
         <Route path="/en" element={<Game language="EN" />} />
-        <Route path="/tl" element={<Game language="TL" />} />
+        {/* <Route path="/tl" element={<Game language="TL" />} />
         <Route path="/en/:id" element={<Game language="EN" />} />
-        <Route path="/tl/:id" element={<Game language="TL" />} />
+        <Route path="/tl/:id" element={<Game language="TL" />} /> */}
       </Routes>
     </BrowserRouter>
   );
