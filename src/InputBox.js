@@ -43,6 +43,8 @@ function InputBox(
     fakeInputDivExtraClasses += "fake-input-div-hidden ";
   if (!waitingForAnswer && !gameResults)
     fakeInputDivExtraClasses += "fake-input-div-transparent ";
+  if (gameState !== "running")
+    fakeInputDivExtraClasses += "fake-input-div-transparent ";
 
   return (
     <div>

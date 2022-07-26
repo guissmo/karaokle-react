@@ -12,9 +12,13 @@ import LyricBox from "./LyricBox";
 import InputBox from "./InputBox";
 import NavigationButtons from "./NavigationButtons";
 import Instructions from "./Instructions";
+import PausedModal from "./PausedModal";
 import ResultsModal from "./ResultsModal";
 import "./css/youtube-embed.css";
 import "./css/main-layout.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
+import { Link } from "react-router-dom";
 
 const opts = {
   height: "240",
@@ -42,6 +46,7 @@ const YouTubePlayer = ({ songInfo }) => {
   const [gameState, setGameState] = useState("not-loaded"); //not-loaded, ready-to-start, running, ended
   const [gameResults, setGameResults] = useState([]);
   const [showResultsModal, setShowResultsModal] = useState(true);
+  const [gotOutOfFocus, setGotOutOfFocus] = useState(false);
 
   // ROUND INFORMATION
   const [currentRound, setCurrentRound] = useState(null);
@@ -64,7 +69,10 @@ const YouTubePlayer = ({ songInfo }) => {
   // LYRICS / SUBTITLE UPDATE
   useInterval(
     async () => {
-      // if (!document.hasFocus()) pauseVideo();
+      if (gameState === "running" && !document.hasFocus()) {
+        setGotOutOfFocus(true);
+        pauseVideo();
+      }
       let elapsed = await getCurrentTime();
       if (gameState === "running") {
         if (getRoundInfo().stopTime < elapsed) {
@@ -84,6 +92,7 @@ const YouTubePlayer = ({ songInfo }) => {
   }, gameState === "loading-video");
 
   const showInstructions = gameState !== "running" && gameState !== "ended";
+  const showPauseScreen = gameState === "running" && gotOutOfFocus;
 
   const controls = (
     <div>
@@ -93,6 +102,7 @@ const YouTubePlayer = ({ songInfo }) => {
         numberOfRounds={numberOfRounds}
         stops={stops}
         currentRound={currentRound}
+        recapRound={recapRound}
         wordsToFindOnRound={wordsToFindOnRound}
       />
       <LyricBox lyric={lyric.text} />
@@ -145,11 +155,18 @@ const YouTubePlayer = ({ songInfo }) => {
   // RETURN STATEMENT
   return (
     <div className="mainDiv">
+      <p style={{ paddingBottom: "15px", opacity: 0.4 }}>
+        <Link to="/" style={{ textDecoration: "none", color: "black" }}>
+          <FontAwesomeIcon icon={faArrowLeft} />
+          <font style={{ marginLeft: "15px" }}>OTHER LANGUAGES</font>
+        </Link>
+      </p>
       {showInstructions ? (
         <Instructions
           startGame={gameState === "ready-to-start" ? startGame : null}
         />
       ) : null}
+      {showPauseScreen ? <PausedModal resumeGame={resumeGame} /> : null}
       {gameState === "ended" && showResultsModal ? (
         <ResultsModal
           gameResults={gameResults}
@@ -213,6 +230,11 @@ const YouTubePlayer = ({ songInfo }) => {
     startRound(1);
   }
 
+  function resumeGame() {
+    setGotOutOfFocus(false);
+    playVideo();
+  }
+
   function startRound(roundNumber, restart = false) {
     setWaitingForAnswer(false);
     setCurrentRound(roundNumber);
@@ -235,6 +257,10 @@ const YouTubePlayer = ({ songInfo }) => {
     seekTo(previousRoundStartTime);
   }
 
+  // function goToLastLineOfRoundAndPlay(roundNumber) {
+  //   goToLastLineOfRound(roundNumber);
+  //   playVideo();
+  // }
   async function getCurrentTime() {
     return await playerRef.current.internalPlayer.getCurrentTime();
   }
@@ -317,6 +343,12 @@ const YouTubePlayer = ({ songInfo }) => {
 
   function recapCurrentStop() {
     let where = getRoundInfo().index - 1;
+    if (where < 0) where = 0;
+    goToTimestampOfArrayEntry(where);
+  }
+
+  function recapRound(roundNumber) {
+    let where = getRoundInfo(roundNumber).index - 1;
     if (where < 0) where = 0;
     goToTimestampOfArrayEntry(where);
   }

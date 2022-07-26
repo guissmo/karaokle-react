@@ -12,7 +12,12 @@ async function getSongListOfLanguage(lang) {
 export async function whereIsTodaysSong(lang) {
   if (!SUPPORTED_LANGUAGES.includes(lang))
     throw `ERROR: You gave me ${lang} for language.`;
-  const dailyCounter = Math.floor(Date.now() / 86400000) - 19198;
+  let timezone = 0;
+  if (lang === "FR") timezone = 1;
+  if (lang === "EN") timezone = 8;
+  if (lang === "TL") timezone = 8;
+  const dailyCounter =
+    Math.floor((Date.now() + timezone * 3600000) / 86400000) - 19198;
   return whereIsSongWithIndex(lang, dailyCounter);
 }
 

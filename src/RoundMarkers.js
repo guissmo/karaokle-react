@@ -9,6 +9,7 @@ function RoundMarkers({
   wordsToFindOnRound,
   gameResults,
   gameState,
+  recapRound,
 }) {
   return (
     <div className="round-markers">
@@ -16,6 +17,7 @@ function RoundMarkers({
         <RoundMarker
           key={x + 1}
           round={x + 1}
+          recapRound={recapRound}
           current={gameState === "running" ? x + 1 === currentRound : false}
           done={x + 1 < currentRound || gameState === "ended"}
           numberOfWords={stops ? wordsToFindOnRound(x + 1) : 0}
