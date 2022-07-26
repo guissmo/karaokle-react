@@ -90,12 +90,12 @@ export function getInfoFromFile(text) {
     .map((x, i) => [x, i])
     .filter(([x]) => x.includes("[["))
     .map(([x, i]) => getStopDataFromLine(x, metadata.lyricOffset, i));
-  const answers = noTimestamps.matchAll(/(?<=\]\])[^#]+(?=###)/g);
+  const answers = noTimestamps.matchAll(/\]\][^#]+(?=###)/g);
   let i = 0;
   for (let answer of answers) {
     roundData[i] = {
       ...roundData[i],
-      answer: answer[0],
+      answer: answer[0].replaceAll(/\]\]/g, ""),
     };
     i++;
   }
