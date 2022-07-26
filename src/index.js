@@ -1,3 +1,5 @@
+import "react-app-polyfill/ie9";
+import "react-app-polyfill/stable";
 import React, { StrictMode, useEffect } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
