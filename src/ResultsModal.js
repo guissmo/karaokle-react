@@ -41,6 +41,7 @@ function copyResultsToClipboard(
   ret += `${
     langDeets.results.tryItOut
   } https://karaokle.guissmo.com/${language.toLowerCase()}\n`;
+  ret += `${langDeets.results.hashtags}\n`;
   navigator.clipboard.writeText(ret);
   setCopied(true);
   setTimeout(() => {

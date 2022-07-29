@@ -2,6 +2,12 @@ import { createContext } from "react";
 
 export const languages = {
   EN: {
+    words: "WORDS",
+    otherLanguages: "OTHER LANGUAGES",
+    placeholder: {
+      before: "TYPE THE NEXT",
+      after: "WORDS HERE",
+    },
     instructions: {
       header: "HOW TO PLAY KARAOKE?",
       loading: "LOADING GAME...",
@@ -25,7 +31,7 @@ export const languages = {
           header: "LOCK IN",
           details: [
             "Click or tap outside the answer box to preview your answer.",
-            "Once you've seen the preview, hit the PLAY button!",
+            "Once you've seen the preview, hit the CHECK button!",
           ],
         },
         {
@@ -58,9 +64,16 @@ export const languages = {
       },
       returnToGame: "RETURN TO GAME",
       tryItOut: "Try it out!",
+      hashtags: "#karaokle #dontforgetthelyrics #wordle",
     },
   },
   TL: {
+    words: "NA SALITA",
+    otherLanguages: "IBANG MGA WIKA",
+    placeholder: {
+      before: "ITYPE ANG",
+      after: "NA SUSUNOD NA SALITA RITO",
+    },
     instructions: {
       header: "PAANO MAGLARO NG KARAOKLE?",
       loading: "NAGLOLOAD PA...",
@@ -84,11 +97,11 @@ export const languages = {
           header: "IKASA ANG SAGOT",
           details: [
             "Magclick o magtap sa labas ng answer box para i-preview ang iyong sagot.",
-            "Kapag ok na lahat, pindutin ang PLAY button para ikasa ang sagot.",
+            "Kapag ok na lahat, pindutin ang CHECK para ikasa ang sagot.",
           ],
         },
         {
-          header: "I-SHARE",
+          header: "ISHARE",
           details: [
             "Pindutin muli ang PLAY button para sa susunod na round.",
             "May ilang round sa Karaokle.",
@@ -100,7 +113,7 @@ export const languages = {
     results: {
       header: "MAHUSAY! ANO'NG SUSUNOD?",
       share: {
-        header: "I-SHARE",
+        header: "ISHARE",
         details:
           "I-share ang iyong mga resulta at tingnan kung kayang tapatan ng mga kaibigan mo ang iyong score! I-tap ang COPY button:",
         copy: "I-COPY ANG RESULTA",
@@ -108,7 +121,7 @@ export const languages = {
         afterCopy: "...tapos i-PASTE mo ang results mo sa social media!",
       },
       review: {
-        header: "I-REVIEW",
+        header: "IREVIEW",
         details: "Tingnan muli ang iyong mga sagot.",
       },
       comeBack: {
@@ -116,10 +129,17 @@ export const languages = {
         details: "Bumalik ka bukas para sa bagong kanta!",
       },
       returnToGame: "BUMALIK SA LARO",
-      tryItOut: "Subukan mo 'tong laro!",
+      tryItOut: "Nasubukan mo na bang magKaraoke? Punta lang sa: ",
+      hashtags: "#karaokle #karaoke #wordle #karaokechallenge",
     },
   },
   FR: {
+    words: "MOTS",
+    otherLanguages: "AUTRES LANGUES",
+    placeholder: {
+      before: "TAPEZ LES",
+      after: "MOTS SUIVANTS ICI",
+    },
     instructions: {
       header: "COMMENT JOUER LE KARAOKLE?",
       loading: "CHARGEMENT DU JEU...",
@@ -143,7 +163,7 @@ export const languages = {
           header: "BLOQUER",
           details: [
             "Cliquez ou appuyez en dehors de la zone de réponse pour prévisualiser votre réponse.",
-            "Après vérification, appuyez sur PLAY (le triangle) pour bloquer les paroles.",
+            "Après vérification, appuyez sur la COCHE pour bloquer les paroles.",
           ],
         },
         {
@@ -175,7 +195,8 @@ export const languages = {
         details: "Revenez demain pour une nouvelle chanson !",
       },
       returnToGame: "RETOUR AU JEU",
-      tryItOut: "Essaye le!",
+      tryItOut: "Essaye le Karaokle! Allez sur ce lien: ",
+      hashtags: "#karaokle #noplp #wordle",
     },
   },
 };

@@ -1,6 +1,6 @@
 import React from "react";
 import YouTube from "react-youtube";
-import { useState, useRef } from "react";
+import { useState, useRef, useContext } from "react";
 import useInterval from "use-interval";
 import {
   wordCount,
@@ -19,6 +19,7 @@ import "./css/main-layout.css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faArrowLeft } from "@fortawesome/free-solid-svg-icons";
 import { Link } from "react-router-dom";
+import LanguageContext from "./LanguageContext";
 
 const opts = {
   height: "240",
@@ -35,6 +36,8 @@ const opts = {
 };
 
 const YouTubePlayer = ({ songInfo }) => {
+  const langDeets = useContext(LanguageContext);
+
   // LYRIC BOX
   const [videoIsPlaying, setVideoIsPlaying] = useState(false);
   const [lyric, setLyric] = useState({
@@ -164,7 +167,7 @@ const YouTubePlayer = ({ songInfo }) => {
       <p style={{ paddingBottom: "15px", opacity: 0.4 }}>
         <Link to="/" style={{ textDecoration: "none", color: "black" }}>
           <FontAwesomeIcon icon={faArrowLeft} />
-          <font style={{ marginLeft: "15px" }}>OTHER LANGUAGES</font>
+          <font style={{ marginLeft: "15px" }}>{langDeets.otherLanguages}</font>
         </Link>
       </p>
       {showInstructions ? (

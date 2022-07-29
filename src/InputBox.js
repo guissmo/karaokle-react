@@ -1,10 +1,11 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { forwardRef } from "react";
+import React, { forwardRef, useContext } from "react";
 import WordsDisplay from "./WordsDisplay";
 import { presentableArray } from "./js/word-counter";
 import { keepUserAnswerIfCorrect, getColorArray } from "./js/word-display";
 import "./css/input-box.css";
+import LanguageContext from "./LanguageContext";
 
 function InputBox(
   {
@@ -22,6 +23,7 @@ function InputBox(
   ref
 ) {
   const roundIsDone = gameResults && gameResults[currentRound];
+  const langDeets = useContext(LanguageContext);
 
   let wordArray = [];
   let colorArray = [];
@@ -56,7 +58,7 @@ function InputBox(
         <input
           ref={ref}
           className={`noplp-input-box input-lyric`}
-          placeholder={`Type the next ${maxLength} words here`}
+          placeholder={`${langDeets.placeholder.before} ${maxLength} ${langDeets.placeholder.after}`}
           onFocus={() => setIsCurrentlyTyping(true)}
           onBlur={() => {
             updateAnswerDisplay();

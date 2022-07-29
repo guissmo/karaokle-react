@@ -1,8 +1,9 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
-import React from "react";
+import React, { useContext } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faXmark } from "@fortawesome/free-solid-svg-icons";
 import "./css/round-marker.css";
+import LanguageContext from "./LanguageContext";
 
 function RoundMarker({
   numberOfWords,
@@ -12,6 +13,7 @@ function RoundMarker({
   round,
   recapRound,
 }) {
+  const langDeets = useContext(LanguageContext);
   let myStyle = {};
 
   if ((done || current) && result && result.correct) {
@@ -32,7 +34,7 @@ function RoundMarker({
       onClick={(done || current) && result ? () => recapRound(round) : null}
     >
       {current ? (
-        `${numberOfWords} WORDS`
+        `${numberOfWords} ${langDeets.words}`
       ) : (done || current) && result ? (
         result.correct ? (
           <FontAwesomeIcon icon={faCheck} />
