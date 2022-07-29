@@ -4,6 +4,7 @@ import { getInfoFromFile } from "./js/lyric-loader";
 import YouTubePlayer from "./YouTubePlayer";
 import { whereIsTodaysSong, whereIsSongWithIndex } from "./js/song-loader.js";
 import { useParams } from "react-router-dom";
+import LanguageContext, { languages } from "./LanguageContext";
 
 const Game = ({ language }) => {
   const [songInfo, setSongInfo] = useState(null);
@@ -27,7 +28,11 @@ const Game = ({ language }) => {
   }, [id, language]);
 
   if (songInfo === null) return `Loading.`;
-  return <YouTubePlayer songInfo={songInfo} language={language} />;
+  return (
+    <LanguageContext.Provider value={languages[language]}>
+      <YouTubePlayer songInfo={songInfo} language={language} />
+    </LanguageContext.Provider>
+  );
 };
 
 export default Game;

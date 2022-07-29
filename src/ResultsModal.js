@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import Modal from "./Modal";
 import WordsDisplay from "./WordsDisplay";
 import { getColorArray } from "./js/word-display";
@@ -11,6 +11,7 @@ import {
   faMagnifyingGlass,
 } from "@fortawesome/free-solid-svg-icons";
 import "./css/instructions.css";
+import LanguageContext from "./LanguageContext";
 
 const emojiRed = String.fromCodePoint(0x1f7e5);
 const emojiGreen = String.fromCodePoint(0x1f7e9);
@@ -19,7 +20,8 @@ function copyResultsToClipboard(
   setCopied,
   gameResults,
   { title, artist },
-  language
+  language,
+  langDeets
 ) {
   let ret = "";
 
@@ -36,7 +38,9 @@ function copyResultsToClipboard(
     })
     .join("\n");
   ret += `\n`;
-  ret += `Try it out at https://karaokle.guissmo.com/${language.toLowerCase()}\n`;
+  ret += `${
+    langDeets.results.tryItOut
+  } https://karaokle.guissmo.com/${language.toLowerCase()}\n`;
   navigator.clipboard.writeText(ret);
   setCopied(true);
   setTimeout(() => {
@@ -54,6 +58,8 @@ const ResultsModal = ({
   const [roundBeingViewed, setRoundBeingViewed] = useState(1);
   const [revealAnswer, setRevealAnswer] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  const langDeets = useContext(LanguageContext);
 
   // gameResults = [
   //   undefined,
@@ -122,13 +128,12 @@ const ResultsModal = ({
   return (
     <Modal>
       <div className="dialog-box">
-        GOOD JOB! WHAT NOW?
+        <h1>{langDeets.results.header}</h1>
         <h2>
-          <FontAwesomeIcon icon={fa1} /> SHARE
+          <FontAwesomeIcon icon={fa1} /> {langDeets.results.share.header}
         </h2>
         <p>
-          Share your results and see if your friends can beat or match your
-          score! Click the button:
+          {langDeets.results.share.details}
           <div style={{ textAlign: "center" }}>
             <button
               onClick={() =>
@@ -139,24 +144,27 @@ const ResultsModal = ({
                     title,
                     artist,
                   },
-                  language
+                  language,
+                  langDeets
                 )
               }
               className="copy-button"
             >
-              {copied ? "COPIED!" : "COPY"}
+              {copied
+                ? langDeets.results.share.copied
+                : langDeets.results.share.copy}
             </button>{" "}
           </div>
         </p>
         <p style={{ textAlign: "center" }}>
           <font color="white">
-            {copied ? "...then PASTE your results on social media." : "\xa0"}
+            {copied ? langDeets.results.share.afterCopy : "\xa0"}
           </font>
         </p>
         <h2>
-          <FontAwesomeIcon icon={fa2} /> REVIEW
+          <FontAwesomeIcon icon={fa2} /> {langDeets.results.review.header}
         </h2>
-        <p>Have a second look at your answers.</p>
+        <p>{langDeets.results.review.details}</p>
         <div id="review-buttons">
           {gameResults.map((x) => {
             if (x === undefined) return null;
@@ -220,12 +228,12 @@ const ResultsModal = ({
           </div>
         </div>
         <h2>
-          <FontAwesomeIcon icon={fa3} /> COME BACK
+          <FontAwesomeIcon icon={fa3} /> {langDeets.results.comeBack.header}
         </h2>
-        <p>Come back tomorrow for a new song!</p>
+        <p>{langDeets.results.comeBack.details}</p>
         <div style={{ textAlign: "center", padding: 15 }}>
           <button onClick={closeResultsModal} className="copy-button">
-            RETURN TO GAME
+            {langDeets.results.returnToGame}
           </button>
         </div>
         {/* {gameResults.map((gameResultArrayEntry) => {

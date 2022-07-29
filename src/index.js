@@ -27,6 +27,8 @@ const Home = () => {
               width: "90%",
               height: "100px",
               fontSize: "16pt",
+              marginLeft: "auto",
+              marginRight: "auto",
             }}
           >
             ENGLISH
@@ -41,6 +43,8 @@ const Home = () => {
               width: "90%",
               height: "100px",
               fontSize: "16pt",
+              marginLeft: "auto",
+              marginRight: "auto",
             }}
           >
             TAGALOG
@@ -64,9 +68,10 @@ const App = () => {
       <Routes>
         <Route path="/en" element={<Game language="EN" />} />
         <Route path="/tl" element={<Game language="TL" />} />
+        <Route path="/fr" element={<Game language="FR" />} />
         <Route path="/en/:id" element={<Game language="EN" />} />
         <Route path="/tl/:id" element={<Game language="TL" />} />
-        <Route path="/test" element={"yo!!!"} />
+        <Route path="/fr/:id" element={<Game language="FR" />} />
         <Route path="/" element={<Home />} />
       </Routes>
     </BrowserRouter>

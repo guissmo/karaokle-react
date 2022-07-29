@@ -69,7 +69,11 @@ const YouTubePlayer = ({ songInfo }) => {
   // LYRICS / SUBTITLE UPDATE
   useInterval(
     async () => {
-      if (gameState === "running" && !document.hasFocus()) {
+      if (
+        !(!process.env.NODE_ENV || process.env.NODE_ENV === "development") &&
+        gameState === "running" &&
+        !document.hasFocus()
+      ) {
         setGotOutOfFocus(true);
         pauseVideo();
       }
@@ -91,7 +95,9 @@ const YouTubePlayer = ({ songInfo }) => {
     if ((await getVideoLoadedFraction()) >= 0) setGameState("ready-to-start");
   }, gameState === "loading-video");
 
-  const showInstructions = gameState !== "running" && gameState !== "ended";
+  let showInstructions = gameState !== "running" && gameState !== "ended";
+  if (!process.env.NODE_ENV || process.env.NODE_ENV === "development")
+    showInstructions = false;
   const showPauseScreen = gameState === "running" && gotOutOfFocus;
 
   const controls = (
@@ -194,10 +200,12 @@ const YouTubePlayer = ({ songInfo }) => {
         />
       </div>
       {gameState === "not-loaded" ? "Waiting for video to load." : controls}
-      {/* <div>
-        <button onClick={nextRound}>nextRound</button>
-        <button onClick={endGame}>endGame</button>
-      </div> */}
+      {!process.env.NODE_ENV || process.env.NODE_ENV === "development" ? (
+        <div>
+          <button onClick={nextRound}>nextRound</button>
+          <button onClick={endGame}>endGame</button>
+        </div>
+      ) : null}
     </div>
   );
 

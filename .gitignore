@@ -9,3 +9,4 @@ lyrics/
 build/
 src/App.js
 src/index.html
+*.ipynb

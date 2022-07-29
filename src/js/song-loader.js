@@ -1,4 +1,4 @@
-const SUPPORTED_LANGUAGES = ["EN", "TL"];
+const SUPPORTED_LANGUAGES = ["EN", "TL", "FR"];
 
 export const LYRICS_URL = `https://guissmo.com/karaokle-data`;
 
