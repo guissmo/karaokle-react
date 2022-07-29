@@ -19,10 +19,12 @@ test("wordCount - FR", () => {
     "Je m'présente, je m'appelle Henri",
     "J'ai vu un arc-en-ciel",
     "Puis après je f*rai des galas",
+    "quand le croque-mort t'emportera",
   ];
   expect(wordCount(arr[0], "FR")).toBe(7);
   expect(wordCount(arr[1], "FR")).toBe(5);
   expect(wordCount(arr[2], "FR")).toBe(6);
+  expect(wordCount(arr[3], "FR")).toBe(5);
 });
 
 test("wordComparison - FR", () => {

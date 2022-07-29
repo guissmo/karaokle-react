@@ -112,7 +112,7 @@ const YouTubePlayer = ({ songInfo }) => {
         stops={stops}
         currentRound={currentRound}
         recapRound={recapRound}
-        wordsToFindOnRound={wordsToFindOnRound}
+        wordsToFindOnRound={(x) => wordsToFindOnRound(x, language)}
       />
       <LyricBox lyric={lyric.text} />
       <InputBox
@@ -124,7 +124,7 @@ const YouTubePlayer = ({ songInfo }) => {
         updateAnswerDisplay={updateAnswerDisplay}
         waitingForAnswer={!videoIsPlaying && waitingForAnswer}
         gameResults={gameResults[currentRound] ? gameResults : null}
-        maxLength={wordsToFindOnRound(currentRound)}
+        maxLength={wordsToFindOnRound(currentRound, language)}
         gameState={gameState}
         revealAnswer={revealAnswer}
       />
@@ -212,9 +212,9 @@ const YouTubePlayer = ({ songInfo }) => {
     </div>
   );
 
-  function wordsToFindOnRound(roundNumber) {
+  function wordsToFindOnRound(roundNumber, language) {
     if (roundNumber <= 0 || roundNumber > numberOfRounds) return 0;
-    return wordCount(stops[roundNumber - 1].answer);
+    return wordCount(stops[roundNumber - 1].answer, language);
   }
 
   function updateAnswerDisplay() {

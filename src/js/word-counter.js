@@ -106,6 +106,6 @@ export function wordArrFromString(str, lang) {
   return PARAMS.preprocess(str).trim().split(PARAMS.wordSpacers);
 }
 
-export function wordCount(str, lang = "EN") {
+export function wordCount(str, lang) {
   return wordArrFromString(str, lang).length;
 }
