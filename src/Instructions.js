@@ -11,30 +11,35 @@ const Instructions = ({ startGame }) => {
   const langDeets = useContext(LanguageContext);
   return (
     <Modal>
-      <div className="dialog-box">
+      <div
+        className="dialog-box"
+        style={{ maxHeight: "90vh", display: "flex", flexDirection: "column" }}
+      >
         <h1>{langDeets.instructions.header}</h1>
-
-        {langDeets.instructions.details.map((x, i) => {
-          return (
-            <div key={i}>
-              <h2>
-                <FontAwesomeIcon icon={fa[i]} /> {x.header}
-              </h2>
-              <p>
-                {x.details.map((y, j) => {
-                  return (
-                    <span key={`${i}_${j}`}>
-                      {y}
-                      <br />
-                    </span>
-                  );
-                })}
-              </p>
-            </div>
-          );
-        })}
+        <div style={{ flex: 1, overflowY: "auto" }}>
+          {langDeets.instructions.details.map((x, i) => {
+            return (
+              <div key={i}>
+                <h2>
+                  <FontAwesomeIcon icon={fa[i]} /> {x.header}
+                </h2>
+                <p>
+                  {x.details.map((y, j) => {
+                    return (
+                      <span key={`${i}_${j}`}>
+                        {y}
+                        <br />
+                      </span>
+                    );
+                  })}
+                </p>
+              </div>
+            );
+          })}
+        </div>
         <div style={{ display: "flex", width: "100%", alignItems: "middle" }}>
           <button
+            style={{ overflow: "clip" }}
             className={`startGame ${startGame ? null : "loading"}`}
             onClick={startGame ? startGame : null}
           >

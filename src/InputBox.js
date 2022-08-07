@@ -1,9 +1,13 @@
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 import React, { forwardRef, useContext } from "react";
-import WordsDisplay from "./WordsDisplay";
+import WordsDisplay, { LANK } from "./WordsDisplay";
 import { presentableArray } from "./js/word-counter";
-import { keepUserAnswerIfCorrect, getColorArray } from "./js/word-display";
+import {
+  keepUserAnswerIfCorrect,
+  getColorArray,
+  wordInitial,
+} from "./js/word-display";
 import "./css/input-box.css";
 import LanguageContext from "./LanguageContext";
 
@@ -19,6 +23,8 @@ function InputBox(
     gameState,
     maxLength,
     revealAnswer,
+    initialsActivated,
+    answerArray,
   },
   ref
 ) {
@@ -58,7 +64,16 @@ function InputBox(
         <input
           ref={ref}
           className={`noplp-input-box input-lyric`}
-          placeholder={`${langDeets.placeholder.before} ${maxLength} ${langDeets.placeholder.after}`}
+          placeholder={
+            initialsActivated
+              ? answerArray
+                  .map((x) => {
+                    const info = wordInitial(x);
+                    return info.initial + (info.theRest ? LANK : "");
+                  })
+                  .join(" ")
+              : `${langDeets.placeholder.before} ${maxLength} ${langDeets.placeholder.after}`
+          }
           onFocus={() => setIsCurrentlyTyping(true)}
           onBlur={() => {
             updateAnswerDisplay();
@@ -76,6 +91,9 @@ function InputBox(
             wordArray={wordArray}
             maxLength={maxLength}
             colorArray={colorArray}
+            initialsActivated={initialsActivated}
+            colorInitials={gameResults ? false : "rgb(193,255,0)"}
+            answerArray={answerArray}
           />
         ) : (
           "\xa0"

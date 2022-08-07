@@ -13,8 +13,11 @@ import {
 import "./css/instructions.css";
 import LanguageContext from "./LanguageContext";
 
-const emojiRed = String.fromCodePoint(0x1f7e5);
-const emojiGreen = String.fromCodePoint(0x1f7e9);
+// const emojiRedCircle = String.fromCodePoint(0x1f534);
+// const emojiGreenCircle = String.fromCodePoint(0x1f7e2);
+const emojiRedSquare = String.fromCodePoint(0x1f7e5);
+const emojiYellowSquare = String.fromCodePoint(0x1f7e8);
+const emojiGreenSquare = String.fromCodePoint(0x1f7e9);
 
 function copyResultsToClipboard(
   setCopied,
@@ -30,9 +33,16 @@ function copyResultsToClipboard(
   ret += gameResults
     .map((gameResultArrayEntry) => {
       if (!gameResultArrayEntry) return null;
-      const roundIcon = gameResultArrayEntry.correct ? emojiGreen : emojiRed;
+      let [emojiGood, emojiBad] = [emojiGreenSquare, emojiRedSquare];
+      // if (gameResultArrayEntry.initialsActivated)
+      //   [emojiGood, emojiBad] = [emojiGreenCircle, emojiRedCircle];
+      const roundIcon = gameResultArrayEntry.correct
+        ? gameResultArrayEntry.initialsActivated
+          ? emojiYellowSquare
+          : emojiGood
+        : emojiBad;
       const wordsToEmoji = gameResultArrayEntry.result
-        .map((x) => (x.correct ? emojiGreen : emojiRed))
+        .map((x) => (x.correct ? emojiGood : emojiBad))
         .join("");
       return `${roundIcon} ${gameResultArrayEntry.key}: ${wordsToEmoji}`;
     })
@@ -71,6 +81,7 @@ const ResultsModal = ({
   //       { correct: true, correctAnswer: "sympathy", userAnswer: "sympathy" },
   //     ],
   //     correct: true,
+  //     initialsActivated: false,
   //   },
   //   {
   //     key: 2,
@@ -82,6 +93,7 @@ const ResultsModal = ({
   //       { correct: true, correctAnswer: "dead", userAnswer: "dead" },
   //     ],
   //     correct: false,
+  //     initialsActivated: true,
   //   },
   //   {
   //     key: 3,
@@ -93,6 +105,7 @@ const ResultsModal = ({
   //       { correct: false, correctAnswer: "Fandango?", userAnswer: "mango" },
   //     ],
   //     correct: false,
+  //     initialsActivated: false,
   //   },
   //   {
   //     key: 4,
@@ -103,6 +116,7 @@ const ResultsModal = ({
   //       { correct: true, correctAnswer: "family", userAnswer: "fam" },
   //     ],
   //     correct: true,
+  //     initialsActivated: true,
   //   },
   //   {
   //     key: 5,
@@ -115,6 +129,7 @@ const ResultsModal = ({
   //       { correct: true, correctAnswer: "die?", userAnswer: "die" },
   //     ],
   //     correct: true,
+  //     initialsActivated: true,
   //   },
   // ];
 
@@ -128,114 +143,124 @@ const ResultsModal = ({
 
   return (
     <Modal>
-      <div className="dialog-box">
+      <div
+        className="dialog-box"
+        style={{ maxHeight: "90vh", display: "flex", flexDirection: "column" }}
+      >
         <h1>{langDeets.results.header}</h1>
-        <h2>
-          <FontAwesomeIcon icon={fa1} /> {langDeets.results.share.header}
-        </h2>
-        <p>
-          {langDeets.results.share.details}
-          <div style={{ textAlign: "center" }}>
-            <button
-              onClick={() =>
-                copyResultsToClipboard(
-                  setCopied,
-                  gameResults,
-                  {
-                    title,
-                    artist,
-                  },
-                  language,
-                  langDeets
-                )
-              }
-              className="copy-button"
-            >
-              {copied
-                ? langDeets.results.share.copied
-                : langDeets.results.share.copy}
-            </button>{" "}
-          </div>
-        </p>
-        <p style={{ textAlign: "center" }}>
-          <font color="white">
-            {copied ? langDeets.results.share.afterCopy : "\xa0"}
-          </font>
-        </p>
-        <h2>
-          <FontAwesomeIcon icon={fa2} /> {langDeets.results.review.header}
-        </h2>
-        <p>{langDeets.results.review.details}</p>
-        <div id="review-buttons">
-          {gameResults.map((x) => {
-            if (x === undefined) return null;
-            return (
+        <div style={{ flex: 1, overflowY: "auto" }}>
+          <h2>
+            <FontAwesomeIcon icon={fa1} /> {langDeets.results.share.header}
+          </h2>
+          <p>
+            {langDeets.results.share.details}
+            <div style={{ textAlign: "center" }}>
               <button
-                key={x.key}
-                onClick={() => setRoundBeingViewed(x.key)}
-                className={`review tab ${
-                  x.key === roundBeingViewed ? null : "review-unselected"
-                } ${x.correct ? "correct-tab" : "wrong-tab"}`}
+                onClick={() =>
+                  copyResultsToClipboard(
+                    setCopied,
+                    gameResults,
+                    {
+                      title,
+                      artist,
+                    },
+                    language,
+                    langDeets
+                  )
+                }
+                className="copy-button"
               >
-                {x.key}
-              </button>
-            );
-          })}
-        </div>
-        <div id="review-zone" className="tab">
-          {stops ? stops[roundBeingViewed - 1].lyr : null}
-          <div className={`noplp-box lyric smaller-noplp-box`}>
-            {
-              <WordsDisplay
-                wordArray={
-                  revealAnswer && !gameResults[roundBeingViewed].correct
-                    ? correctWordArray
-                    : userWordArray
-                }
-                maxLength={correctWordArray.length}
-                colorArray={
-                  revealAnswer
-                    ? Array(correctWordArray.length).fill("#08ff00")
-                    : tempColors
-                }
-              />
-            }
+                {copied
+                  ? langDeets.results.share.copied
+                  : langDeets.results.share.copy}
+              </button>{" "}
+            </div>
+          </p>
+          <p style={{ textAlign: "center" }}>
+            <font color="white">
+              {copied ? langDeets.results.share.afterCopy : "\xa0"}
+            </font>
+          </p>
+          <h2>
+            <FontAwesomeIcon icon={fa2} /> {langDeets.results.review.header}
+          </h2>
+          <p>{langDeets.results.review.details}</p>
+          <div id="review-buttons">
+            {gameResults.map((x) => {
+              if (x === undefined) return null;
+              return (
+                <button
+                  key={x.key}
+                  onClick={() => setRoundBeingViewed(x.key)}
+                  className={`review tab ${
+                    x.key === roundBeingViewed ? null : "review-unselected"
+                  } ${x.correct ? "correct-tab" : "wrong-tab"}`}
+                >
+                  {x.key}
+                </button>
+              );
+            })}
           </div>
-          <br />
-          <div>
-            <button
-              onClick={
-                gameResults[roundBeingViewed].correct
-                  ? null
-                  : () => setRevealAnswer(!revealAnswer)
+          <div id="review-zone" className="tab">
+            {stops ? stops[roundBeingViewed - 1].lyr : null}
+            <div className={`noplp-box lyric smaller-noplp-box`}>
+              {
+                <WordsDisplay
+                  wordArray={
+                    revealAnswer && !gameResults[roundBeingViewed].correct
+                      ? correctWordArray
+                      : userWordArray
+                  }
+                  maxLength={correctWordArray.length}
+                  colorArray={
+                    revealAnswer
+                      ? Array(correctWordArray.length).fill("#08ff00")
+                      : tempColors
+                  }
+                  initialsActivated={
+                    gameResults[roundBeingViewed].initialsActivated
+                  }
+                  colorInitials={"rgb(193,255,0)"}
+                  answerArray={correctWordArray}
+                />
               }
-              className="mag-button"
-              style={{
-                color: gameResults[roundBeingViewed].correct
-                  ? "white"
-                  : revealAnswer
-                  ? "#ee0000"
-                  : "#08ff00",
-              }}
-            >
-              <FontAwesomeIcon
-                icon={
+            </div>
+            <br />
+            <div>
+              <button
+                onClick={
                   gameResults[roundBeingViewed].correct
-                    ? faCheck
-                    : faMagnifyingGlass
+                    ? null
+                    : () => setRevealAnswer(!revealAnswer)
                 }
-              />
+                className="mag-button"
+                style={{
+                  color: gameResults[roundBeingViewed].correct
+                    ? "white"
+                    : revealAnswer
+                    ? "#ee0000"
+                    : "#08ff00",
+                }}
+              >
+                <FontAwesomeIcon
+                  icon={
+                    gameResults[roundBeingViewed].correct
+                      ? faCheck
+                      : faMagnifyingGlass
+                  }
+                />
+              </button>
+            </div>
+          </div>
+          <h2>
+            <FontAwesomeIcon icon={fa3} /> {langDeets.results.comeBack.header}
+          </h2>
+          <p>{langDeets.results.comeBack.details}</p>
+          <div style={{ textAlign: "center", padding: 15 }}>
+            <button onClick={closeResultsModal} className="copy-button">
+              {langDeets.results.returnToGame}
             </button>
           </div>
-        </div>
-        <h2>
-          <FontAwesomeIcon icon={fa3} /> {langDeets.results.comeBack.header}
-        </h2>
-        <p>{langDeets.results.comeBack.details}</p>
-        <div style={{ textAlign: "center", padding: 15 }}>
-          <button onClick={closeResultsModal} className="copy-button">
-            {langDeets.results.returnToGame}
-          </button>
         </div>
         {/* {gameResults.map((gameResultArrayEntry) => {
           const correctWordArray = gameResultArrayEntry.result.map(

@@ -9,6 +9,7 @@ import {
   faSquarePollVertical,
   faCheck,
   faPause,
+  faSuitcaseMedical,
 } from "@fortawesome/free-solid-svg-icons";
 import "./css/navigation-buttons.css";
 
@@ -27,6 +28,8 @@ const NavigationButtons = ({
   answerRevealed,
   gameResults,
   toggleShowResultsModal,
+  // initialsActivated,
+  setInitialsActivated,
 }) => {
   let leftNavigation = [];
 
@@ -55,11 +58,22 @@ const NavigationButtons = ({
   if (!gameResults) {
     rightNavigation.push(
       <button
+        key="initials"
+        id="initials"
+        className="secondary"
+        onClick={() => setInitialsActivated(true)}
+        disabled={!validate || gameState !== "running"}
+      >
+        <FontAwesomeIcon icon={faSuitcaseMedical} />{" "}
+      </button>
+    );
+    rightNavigation.push(
+      <button
         key="validate"
         id="validate"
         className="primary"
         onClick={validate}
-        disabled={!validate}
+        disabled={!validate || gameState !== "running"}
       >
         <FontAwesomeIcon icon={faCheck} />
       </button>

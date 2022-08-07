@@ -13,18 +13,19 @@ export const languages = {
       loading: "LOADING GAME...",
       start: "START GAME!",
       details: [
-        {
-          header: "LISTEN",
-          details: [
-            "When you start the game, the song will start playing.",
-            "Listen to it, and sing along if you like!",
-          ],
-        },
+        // {
+        //   header: "LISTEN",
+        //   details: [
+        //     "When you start the game, the song will start playing.",
+        //     "Listen to it, and sing along if you like!",
+        //   ],
+        // },
         {
           header: "TYPE",
           details: [
             "When the music stops, then it's your turn!",
             "Fill in the next few words, as indicated on the box.",
+            "If you need help, press the first aid kit to reveal the initials.",
           ],
         },
         {
@@ -79,18 +80,19 @@ export const languages = {
       loading: "NAGLOLOAD PA...",
       start: "UMPISAHAN",
       details: [
-        {
-          header: "MAKINIG",
-          details: [
-            "Pag-umpisa ng laro, may kantang tutugtog.",
-            "Pakinggan ito at makikanta kung gusto mo.",
-          ],
-        },
+        // {
+        //   header: "MAKINIG",
+        //   details: [
+        //     "Pag-umpisa ng laro, may kantang tutugtog.",
+        //     "Pakinggan ito at makikanta kung gusto mo.",
+        //   ],
+        // },
         {
           header: "MAGTYPE",
           details: [
-            "Titigil ang kanta. Ikaw ang bahala sa susunod na lyrics.",
+            "Kapag tumigil ang kanta, sagot mo ang susunod na lyrics!",
             "I-type ang susunod na mga salita. Nakasulat sa kahon kung ilan ang kailangan.",
+            "I-click ang first aid kit kung makakatulong sa'yo ang word initials.",
           ],
         },
         {
@@ -145,18 +147,19 @@ export const languages = {
       loading: "CHARGEMENT DU JEU...",
       start: "COMMENCER!",
       details: [
-        {
-          header: "ÉCOUTER",
-          details: [
-            "Lorsque vous démarrez le jeu, la musique démarre.",
-            "Écoutez et chantez si vous voulez.",
-          ],
-        },
+        // {
+        //   header: "ÉCOUTER",
+        //   details: [
+        //     "Lorsque vous démarrez le jeu, la musique démarre.",
+        //     "Écoutez et chantez si vous voulez.",
+        //   ],
+        // },
         {
           header: "TAPER",
           details: [
-            "La chanson s'arrêtera. C'est à vous de compléter les paroles.",
+            "La chanson s'arrêtera. C'est à vous de compléter les paroles!",
             "Tapez les mots suivants. Il est écrit dans la case comment est nécessaire.",
+            "Si tu l'as besoin, tapez la trousse de secours pour révéler les initiales.",
           ],
         },
         {

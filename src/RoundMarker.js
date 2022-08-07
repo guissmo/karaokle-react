@@ -17,7 +17,11 @@ function RoundMarker({
   let myStyle = {};
 
   if ((done || current) && result && result.correct) {
-    myStyle = { backgroundColor: "rgb(81, 203, 32)" };
+    if (result.initialsActivated) {
+      myStyle = { backgroundColor: "rgb(174,164,29)" };
+    } else {
+      myStyle = { backgroundColor: "rgb(81, 203, 32)" };
+    }
   } else {
     myStyle = { backgroundColor: "rgb(240, 101, 67)" };
   }

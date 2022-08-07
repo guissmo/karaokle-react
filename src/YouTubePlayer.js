@@ -6,6 +6,7 @@ import {
   wordCount,
   compareAnswers,
   presentableString,
+  wordArrFromString,
 } from "./js/word-counter";
 import RoundMarkers from "./RoundMarkers";
 import LyricBox from "./LyricBox";
@@ -57,6 +58,7 @@ const YouTubePlayer = ({ songInfo }) => {
   const [isCurrentlyTyping, setIsCurrentlyTyping] = useState(false);
   const [userAnswer, setUserAnswer] = useState("");
   const [revealAnswer, setRevealAnswer] = useState(false);
+  const [initialsActivated, setInitialsActivated] = useState(false);
 
   // REFS
   const playerRef = useRef();
@@ -117,6 +119,7 @@ const YouTubePlayer = ({ songInfo }) => {
       <LyricBox lyric={lyric.text} />
       <InputBox
         ref={inputRef}
+        initialsActivated={initialsActivated}
         language={language}
         userAnswer={userAnswer}
         currentRound={currentRound}
@@ -127,8 +130,15 @@ const YouTubePlayer = ({ songInfo }) => {
         maxLength={wordsToFindOnRound(currentRound, language)}
         gameState={gameState}
         revealAnswer={revealAnswer}
+        answerArray={
+          gameState === "running"
+            ? wordArrFromString(getRoundInfo().answer, language)
+            : null
+        }
       />
       <NavigationButtons
+        initialsActivated={initialsActivated}
+        setInitialsActivated={setInitialsActivated}
         goToLastLineOfRound={goToLastLineOfRound}
         playVideo={playVideo}
         pauseVideo={pauseVideo}
@@ -207,6 +217,9 @@ const YouTubePlayer = ({ songInfo }) => {
         <div>
           <button onClick={nextRound}>nextRound</button>
           <button onClick={endGame}>endGame</button>
+          <button onClick={() => setInitialsActivated(true)}>
+            activateInitials
+          </button>
         </div>
       ) : null}
     </div>
@@ -325,6 +338,7 @@ const YouTubePlayer = ({ songInfo }) => {
 
   function nextRound() {
     const newRound = currentRound + 1;
+    setInitialsActivated(false);
     if (newRound <= numberOfRounds) startRound(newRound);
     else endGame();
   }
@@ -342,6 +356,7 @@ const YouTubePlayer = ({ songInfo }) => {
       key: currentRound,
       result,
       correct: result.reduce((x, y) => x && y.correct, true),
+      initialsActivated: initialsActivated,
     };
     setGameResults(tempArray);
   }
